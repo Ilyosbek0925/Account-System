@@ -28,7 +28,7 @@ jobs:
               git reset --hard origin/main
             else
               echo "🆕 Yangi loyiha klonlanmoqda..."
-              git clone git@account_github.com:Ilyosbek0925/account.git
+              git clone git@account_github.com:Ilyosbek0925/Account-System
               cd account
             fi
 
