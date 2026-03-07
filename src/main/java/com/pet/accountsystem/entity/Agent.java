@@ -9,7 +9,7 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-public class Agent extends User {
+public class Agent extends UserEntity {
 
     @ManyToOne
     @JoinColumn(name = "baza_id")

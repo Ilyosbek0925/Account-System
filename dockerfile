@@ -1,0 +1,29 @@
+# =========================
+# 1-qadam: Build stage
+# =========================
+FROM maven:3.9.9-eclipse-temurin-17 AS build
+WORKDIR /app
+
+# pom.xml ni alohida COPY qilamiz (dependency caching uchun)
+COPY pom.xml ./
+
+# faqat dependency’larni offline yuklaymiz
+RUN mvn dependency:go-offline -B
+
+# Source code’ni keyin COPY qilamiz
+COPY src ./src
+
+# Build jar (testlarni o‘tkazmaymiz)
+RUN mvn clean package -DskipTests
+
+# =========================
+# 2-qadam: Run stage
+# =========================
+FROM eclipse-temurin:17-jdk-jammy
+WORKDIR /app
+
+# Build qilingan jarni COPY qilamiz
+COPY --from=build /app/target/*.jar account_app.jar
+
+# Entry point
+ENTRYPOINT ["java", "-jar", "account_app.jar"]

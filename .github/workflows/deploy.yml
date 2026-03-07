@@ -1,0 +1,41 @@
+name: bushido
+on:
+  push:
+    branches:
+      - main # faqat main branchga push bo‘lganda ishga tushadi
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Deploy to VPS via SSH
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            set -e
+            cd /opt
+
+            if [ -d "account/.git" ]; then
+              cd account
+              echo "📦 Kodni yangilayapman..."
+              git fetch origin main
+              git reset --hard origin/main
+            else
+              echo "🆕 Yangi loyiha klonlanmoqda..."
+              git clone git@account_github.com:Ilyosbek0925/account.git
+              cd account
+            fi
+
+            echo "🐳 Docker konteynerlarini yangilayapman..."
+            # Oldingi containerlarni to‘liq o‘chirib, minimal downtime bilan build qilish
+            docker compose pull
+            docker compose up -d --build
+            echo "✅ Deploy tugadi!"
+          timeout: 15m
+          retries: 2

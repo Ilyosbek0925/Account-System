@@ -7,5 +7,5 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-public class Admin extends User {
+public class Admin extends UserEntity {
 }

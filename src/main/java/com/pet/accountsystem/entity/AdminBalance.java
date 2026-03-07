@@ -11,10 +11,10 @@ import lombok.Setter;
 @Setter
 public class AdminBalance extends BaseEntity {
 
-    private java.math.BigDecimal usdAmount;
-    private java.math.BigDecimal uzsAmount;
-    private java.math.BigDecimal clickAmount;
-    private java.math.BigDecimal bankAmount;
+    private String usdAmount;
+    private String uzsAmount;
+    private String clickAmount;
+    private String bankAmount;
 
     @OneToOne
     @JoinColumn(name = "admin_id")

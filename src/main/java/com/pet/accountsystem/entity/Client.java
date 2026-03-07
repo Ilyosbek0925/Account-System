@@ -13,7 +13,7 @@ public class Client extends BaseEntity {
 
     private String status;
 
-    private String groupId;   // changed to String
+    private String groupId;
 
     private String clientType;
 
