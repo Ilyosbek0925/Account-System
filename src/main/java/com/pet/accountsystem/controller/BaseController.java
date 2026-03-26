@@ -22,32 +22,72 @@ public class BaseController {
 
     @PreAuthorize("hasAnyRole('ADMIN')")
     @PostMapping
-    public ResponseEntity<BazaResponseDTO> create(@Valid @RequestBody BazaRequestDTO dto) {
-        return ResponseEntity.ok(bazaService.create(dto));
+    public ResponseEntity<ApiResponse<BazaResponseDTO>> create(@Valid @RequestBody BazaRequestDTO dto) {
+
+        BazaResponseDTO response = bazaService.create(dto);
+
+        return ResponseEntity.ok(
+                ApiResponse.<BazaResponseDTO>builder()
+                        .message("Base created successfully")
+                        .data(response)
+                        .status(201)
+                        .build()
+        );
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<BazaResponseDTO> getById(@PathVariable UUID id) {
-        return ResponseEntity.ok(bazaService.getById(id));
+    public ResponseEntity<ApiResponse<BazaResponseDTO>> getById(@PathVariable UUID id) {
+
+        BazaResponseDTO response = bazaService.getById(id);
+
+        return ResponseEntity.ok(
+                ApiResponse.<BazaResponseDTO>builder()
+                        .message("Base fetched successfully")
+                        .data(response)
+                        .status(200)
+                        .build()
+        );
     }
 
     @GetMapping
-    public ResponseEntity<List<BazaResponseDTO>> getAll() {
-        return ResponseEntity.ok(bazaService.getAll());
+    public ResponseEntity<ApiResponse<List<BazaResponseDTO>>> getAll() {
+
+        List<BazaResponseDTO> list = bazaService.getAll();
+
+        return ResponseEntity.ok(
+                ApiResponse.<List<BazaResponseDTO>>builder()
+                        .message("Bases fetched successfully")
+                        .data(list)
+                        .status(200)
+                        .build()
+        );
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<BazaResponseDTO> update(@PathVariable UUID id, @RequestBody BazaRequestDTO dto) {
-        return ResponseEntity.ok(bazaService.update(id, dto));
+    public ResponseEntity<ApiResponse<BazaResponseDTO>> update(
+            @PathVariable UUID id,
+            @RequestBody BazaRequestDTO dto) {
+
+        BazaResponseDTO updated = bazaService.update(id, dto);
+
+        return ResponseEntity.ok(
+                ApiResponse.<BazaResponseDTO>builder()
+                        .message("Base updated successfully")
+                        .data(updated)
+                        .status(200)
+                        .build()
+        );
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse> delete(@PathVariable UUID id) {
+    public ResponseEntity<ApiResponse<Void>> delete(@PathVariable UUID id) {
+
         bazaService.deleteById(id);
+
         return ResponseEntity.ok(
-                ApiResponse.builder()
-                        .message("baza deleted successfully")
-                        .status(203)
+                ApiResponse.<Void>builder()
+                        .message("Base deleted successfully")
+                        .status(204)
                         .build()
         );
     }

@@ -19,33 +19,72 @@ public class AdminBalanceController {
     private final AdminBalanceService adminBalanceService;
 
     @PostMapping
-    public ResponseEntity<AdminBalanceResponseDTO> create(@RequestBody AdminBalanceRequestDTO dto) {
-        return ResponseEntity.ok(adminBalanceService.create(dto));
+    public ResponseEntity<ApiResponse<AdminBalanceResponseDTO>> create(@RequestBody AdminBalanceRequestDTO dto) {
+
+        AdminBalanceResponseDTO response = adminBalanceService.create(dto);
+
+        return ResponseEntity.ok(
+                ApiResponse.<AdminBalanceResponseDTO>builder()
+                        .message("Admin balance created successfully")
+                        .data(response)
+                        .status(201)
+                        .build()
+        );
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<AdminBalanceResponseDTO> getById(@PathVariable UUID id) {
-        return ResponseEntity.ok(adminBalanceService.getById(id));
+    public ResponseEntity<ApiResponse<AdminBalanceResponseDTO>> getById(@PathVariable UUID id) {
+
+        AdminBalanceResponseDTO response = adminBalanceService.getById(id);
+
+        return ResponseEntity.ok(
+                ApiResponse.<AdminBalanceResponseDTO>builder()
+                        .message("Admin balance fetched successfully")
+                        .data(response)
+                        .status(200)
+                        .build()
+        );
     }
 
     @GetMapping
-    public ResponseEntity<List<AdminBalanceResponseDTO>> getAll() {
-        return ResponseEntity.ok(adminBalanceService.getAll());
+    public ResponseEntity<ApiResponse<List<AdminBalanceResponseDTO>>> getAll() {
+
+        List<AdminBalanceResponseDTO> response = adminBalanceService.getAll();
+
+        return ResponseEntity.ok(
+                ApiResponse.<List<AdminBalanceResponseDTO>>builder()
+                        .message("Admin balances fetched successfully")
+                        .data(response)
+                        .status(200)
+                        .build()
+        );
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<AdminBalanceResponseDTO> update(@PathVariable UUID id,
-                                                          @RequestBody AdminBalanceRequestDTO dto) {
-        return ResponseEntity.ok(adminBalanceService.update(id, dto));
+    public ResponseEntity<ApiResponse<AdminBalanceResponseDTO>> update(
+            @PathVariable UUID id,
+            @RequestBody AdminBalanceRequestDTO dto) {
+
+        AdminBalanceResponseDTO response = adminBalanceService.update(id, dto);
+
+        return ResponseEntity.ok(
+                ApiResponse.<AdminBalanceResponseDTO>builder()
+                        .message("Admin balance updated successfully")
+                        .data(response)
+                        .status(200)
+                        .build()
+        );
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse> delete(@PathVariable UUID id) {
+    public ResponseEntity<ApiResponse<Void>> delete(@PathVariable UUID id) {
+
         adminBalanceService.deleteById(id);
+
         return ResponseEntity.ok(
-                ApiResponse.builder()
-                        .message("admin balance deleted successfully")
-                        .status(203)
+                ApiResponse.<Void>builder()
+                        .message("Admin balance deleted successfully")
+                        .status(204)
                         .build()
         );
     }

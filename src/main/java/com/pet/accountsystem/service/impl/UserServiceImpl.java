@@ -1,7 +1,6 @@
 package com.pet.accountsystem.service.impl;
 
 import com.pet.accountsystem.dto.LoginDto;
-import com.pet.accountsystem.dto.response.ApiResponse;
 import com.pet.accountsystem.dto.response.LoginResponseDto;
 import com.pet.accountsystem.entity.UserEntity;
 import com.pet.accountsystem.exception.DataNotFoundException;
@@ -10,7 +9,6 @@ import com.pet.accountsystem.jwt.JwtTokenService;
 import com.pet.accountsystem.repository.UserRepository;
 import com.pet.accountsystem.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -32,15 +30,15 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     }
 
     @Override
-    public ResponseEntity<LoginResponseDto> login(LoginDto loginDto) {
+    public LoginResponseDto login(LoginDto loginDto) {
         UserEntity user = userRepository.findByEmail(loginDto.getEmail()).orElseThrow(() -> new DataNotFoundException("User not found"));
         if (passwordEncoder.matches(loginDto.getPassword(), user.getPassword())) {
             if (user.getIsActive()) {
-                return ResponseEntity.ok(LoginResponseDto.builder()
+                return LoginResponseDto.builder()
                         .userId(user.getId())
                         .role(user.getRole())
                         .jwtToken(jwtTokenService.generateAccessToken(user))
-                        .build());
+                        .build();
             }
             throw new NotAcceptableException("Your account has blocked");
         }

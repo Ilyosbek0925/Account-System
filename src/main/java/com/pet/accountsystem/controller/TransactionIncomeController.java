@@ -2,6 +2,7 @@ package com.pet.accountsystem.controller;
 
 import com.pet.accountsystem.dto.TotalTransactionDTO;
 import com.pet.accountsystem.dto.request.TransactionIncomeRequestDTO;
+import com.pet.accountsystem.dto.response.ApiResponse;
 import com.pet.accountsystem.dto.response.TransactionIncomeResponse;
 import com.pet.accountsystem.entity.enums.TransactionType;
 import com.pet.accountsystem.service.TransactionIncomeService;
@@ -26,43 +27,86 @@ public class TransactionIncomeController {
     private final TransactionIncomeService transactionIncomeService;
 
     @PostMapping
-    public ResponseEntity<TransactionIncomeResponse> create(@Valid @RequestBody TransactionIncomeRequestDTO dto) {
-        log.debug("creating transaction income");
-        System.out.println("create transaction income");
-        return ResponseEntity.ok(transactionIncomeService.create(dto));
+    public ResponseEntity<ApiResponse<TransactionIncomeResponse>> create(
+            @Valid @RequestBody TransactionIncomeRequestDTO dto
+    ) {
+        log.debug("Creating transaction income");
+
+        TransactionIncomeResponse response = transactionIncomeService.create(dto);
+
+        return ResponseEntity.ok(
+                ApiResponse.<TransactionIncomeResponse>builder()
+                        .message("Transaction income created successfully")
+                        .data(response)
+                        .status(201)
+                        .build()
+        );
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TransactionIncomeResponse> getById(@PathVariable UUID id) {
-        return ResponseEntity.ok(transactionIncomeService.getById(id));
-    }
+    public ResponseEntity<ApiResponse<TransactionIncomeResponse>> getById(@PathVariable UUID id) {
 
+        TransactionIncomeResponse response = transactionIncomeService.getById(id);
+
+        return ResponseEntity.ok(
+                ApiResponse.<TransactionIncomeResponse>builder()
+                        .message("Transaction income fetched successfully")
+                        .data(response)
+                        .status(200)
+                        .build()
+        );
+    }
 
     @GetMapping("/{agentId}/total-transaction-info")
-    public ResponseEntity<TotalTransactionDTO> getTotalTransaction(@PathVariable UUID agentId) {
-        return ResponseEntity.ok(transactionIncomeService.getTotalByAgentId(agentId));
+    public ResponseEntity<ApiResponse<TotalTransactionDTO>> getTotalTransaction(@PathVariable UUID agentId) {
+
+        TotalTransactionDTO response = transactionIncomeService.getTotalByAgentId(agentId);
+
+        return ResponseEntity.ok(
+                ApiResponse.<TotalTransactionDTO>builder()
+                        .message("Total transaction info fetched successfully")
+                        .data(response)
+                        .status(200)
+                        .build()
+        );
     }
 
-
     @GetMapping("/agent/{agentId}")
-    public ResponseEntity<List<TransactionIncomeResponse>> getAllByAgentId(@PathVariable UUID agentId,
-                                                                           @RequestParam(required = false) TransactionType type,
-                                                                           @RequestParam(required = false) LocalDate fromDate,
-                                                                           @RequestParam(required = false) LocalDate toDate,
-                                                                           @RequestParam(required = false, defaultValue = "10") int size,
-                                                                           @RequestParam(required = false, defaultValue = "0") int page) {
-
+    public ResponseEntity<ApiResponse<List<TransactionIncomeResponse>>> getAllByAgentId(
+            @PathVariable UUID agentId,
+            @RequestParam(required = false) TransactionType type,
+            @RequestParam(required = false) LocalDate fromDate,
+            @RequestParam(required = false) LocalDate toDate,
+            @RequestParam(required = false, defaultValue = "10") int size,
+            @RequestParam(required = false, defaultValue = "0") int page
+    ) {
         Pageable pageable = PageRequest.of(page, size);
-        System.out.println("ichida");
-        return ResponseEntity.ok(transactionIncomeService.getAllByAgentId(agentId, fromDate, toDate, type, pageable));
+
+        List<TransactionIncomeResponse> response =
+                transactionIncomeService.getAllByAgentId(agentId, fromDate, toDate, type, pageable);
+
+        return ResponseEntity.ok(
+                ApiResponse.<List<TransactionIncomeResponse>>builder()
+                        .message("Transaction incomes fetched successfully")
+                        .data(response)
+                        .status(200)
+                        .build()
+        );
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<TransactionIncomeResponse> update(@PathVariable UUID id,
-                                                            @RequestBody TransactionIncomeRequestDTO dto) {
+    public ResponseEntity<ApiResponse<TransactionIncomeResponse>> update(
+            @PathVariable UUID id,
+            @RequestBody TransactionIncomeRequestDTO dto
+    ) {
+        TransactionIncomeResponse response = transactionIncomeService.update(id, dto);
 
-        return ResponseEntity.ok(transactionIncomeService.update(id, dto));
+        return ResponseEntity.ok(
+                ApiResponse.<TransactionIncomeResponse>builder()
+                        .message("Transaction income updated successfully")
+                        .data(response)
+                        .status(200)
+                        .build()
+        );
     }
-
-
 }

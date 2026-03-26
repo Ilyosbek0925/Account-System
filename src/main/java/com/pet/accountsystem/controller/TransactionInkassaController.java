@@ -19,25 +19,61 @@ public class TransactionInkassaController {
     private final TransactionInkassaService transactionInkassaService;
 
     @PostMapping
-    public ResponseEntity<TransactionInkassaResponseDTO> create(@RequestBody TransactionInkassaRequestDTO dto) {
-        return ResponseEntity.ok(transactionInkassaService.create(dto));
+    public ResponseEntity<ApiResponse<TransactionInkassaResponseDTO>> create(
+            @RequestBody TransactionInkassaRequestDTO dto) {
+
+        TransactionInkassaResponseDTO response = transactionInkassaService.create(dto);
+
+        return ResponseEntity.status(201).body(
+                ApiResponse.<TransactionInkassaResponseDTO>builder()
+                        .message("Transaction inkassa created successfully")
+                        .data(response)
+                        .status(201)
+                        .build()
+        );
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TransactionInkassaResponseDTO> getById(@PathVariable UUID id) {
-        return ResponseEntity.ok(transactionInkassaService.getById(id));
+    public ResponseEntity<ApiResponse<TransactionInkassaResponseDTO>> getById(@PathVariable UUID id) {
+
+        TransactionInkassaResponseDTO response = transactionInkassaService.getById(id);
+
+        return ResponseEntity.ok(
+                ApiResponse.<TransactionInkassaResponseDTO>builder()
+                        .message("Transaction inkassa fetched successfully")
+                        .data(response)
+                        .status(200)
+                        .build()
+        );
     }
 
     @GetMapping
-    public ResponseEntity<List<TransactionInkassaResponseDTO>> getAll() {
-        return ResponseEntity.ok(transactionInkassaService.getAll());
+    public ResponseEntity<ApiResponse<List<TransactionInkassaResponseDTO>>> getAll() {
+
+        List<TransactionInkassaResponseDTO> response = transactionInkassaService.getAll();
+
+        return ResponseEntity.ok(
+                ApiResponse.<List<TransactionInkassaResponseDTO>>builder()
+                        .message("Transaction inkassas fetched successfully")
+                        .data(response)
+                        .status(200)
+                        .build()
+        );
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<TransactionInkassaResponseDTO> update(@PathVariable UUID id,
-                                                                @RequestBody TransactionInkassaRequestDTO dto) {
-        return ResponseEntity.ok(transactionInkassaService.update(id, dto));
+    public ResponseEntity<ApiResponse<TransactionInkassaResponseDTO>> update(
+            @PathVariable UUID id,
+            @RequestBody TransactionInkassaRequestDTO dto) {
+
+        TransactionInkassaResponseDTO response = transactionInkassaService.update(id, dto);
+
+        return ResponseEntity.ok(
+                ApiResponse.<TransactionInkassaResponseDTO>builder()
+                        .message("Transaction inkassa updated successfully")
+                        .data(response)
+                        .status(200)
+                        .build()
+        );
     }
-
-
 }

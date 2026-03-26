@@ -1,5 +1,7 @@
 package com.pet.accountsystem.controller;
+
 import com.pet.accountsystem.dto.LoginDto;
+import com.pet.accountsystem.dto.response.ApiResponse;
 import com.pet.accountsystem.dto.response.LoginResponseDto;
 import com.pet.accountsystem.service.UserService;
 import jakarta.validation.Valid;
@@ -13,11 +15,20 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
+
     private final UserService userService;
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponseDto> login(@Valid @RequestBody LoginDto loginDto) {
-        return userService.login(loginDto);
-    }
+    public ResponseEntity<ApiResponse<LoginResponseDto>> login(@Valid @RequestBody LoginDto loginDto) {
 
+        LoginResponseDto response = userService.login(loginDto);
+
+        return ResponseEntity.ok(
+                ApiResponse.<LoginResponseDto>builder()
+                        .message("Login successful")
+                        .data(response)
+                        .status(200)
+                        .build()
+        );
+    }
 }

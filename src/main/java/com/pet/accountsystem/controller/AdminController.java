@@ -19,33 +19,72 @@ public class AdminController {
     private final AdminService adminService;
 
     @PostMapping
-    public ResponseEntity<AdminResponseDTO> create(@RequestBody AdminRequestDTO dto) {
-        return ResponseEntity.ok(adminService.create(dto));
+    public ResponseEntity<ApiResponse<AdminResponseDTO>> create(@RequestBody AdminRequestDTO dto) {
+
+        AdminResponseDTO response = adminService.create(dto);
+
+        return ResponseEntity.ok(
+                ApiResponse.<AdminResponseDTO>builder()
+                        .message("Admin created successfully")
+                        .data(response)
+                        .status(201)
+                        .build()
+        );
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<AdminResponseDTO> getById(@PathVariable UUID id) {
-        return ResponseEntity.ok(adminService.getById(id));
+    public ResponseEntity<ApiResponse<AdminResponseDTO>> getById(@PathVariable UUID id) {
+
+        AdminResponseDTO response = adminService.getById(id);
+
+        return ResponseEntity.ok(
+                ApiResponse.<AdminResponseDTO>builder()
+                        .message("Admin fetched successfully")
+                        .data(response)
+                        .status(200)
+                        .build()
+        );
     }
 
     @GetMapping
-    public ResponseEntity<List<AdminResponseDTO>> getAll() {
-        return ResponseEntity.ok(adminService.getAll());
+    public ResponseEntity<ApiResponse<List<AdminResponseDTO>>> getAll() {
+
+        List<AdminResponseDTO> response = adminService.getAll();
+
+        return ResponseEntity.ok(
+                ApiResponse.<List<AdminResponseDTO>>builder()
+                        .message("Admins fetched successfully")
+                        .data(response)
+                        .status(200)
+                        .build()
+        );
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<AdminResponseDTO> update(@PathVariable UUID id,
-                                                   @RequestBody AdminRequestDTO dto) {
-        return ResponseEntity.ok(adminService.update(id, dto));
+    public ResponseEntity<ApiResponse<AdminResponseDTO>> update(
+            @PathVariable UUID id,
+            @RequestBody AdminRequestDTO dto) {
+
+        AdminResponseDTO response = adminService.update(id, dto);
+
+        return ResponseEntity.ok(
+                ApiResponse.<AdminResponseDTO>builder()
+                        .message("Admin updated successfully")
+                        .data(response)
+                        .status(200)
+                        .build()
+        );
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse> delete(@PathVariable UUID id) {
+    public ResponseEntity<ApiResponse<Void>> delete(@PathVariable UUID id) {
+
         adminService.deleteById(id);
+
         return ResponseEntity.ok(
-                ApiResponse.builder()
-                        .message("admin deleted successfully")
-                        .status(203)
+                ApiResponse.<Void>builder()
+                        .message("Admin deleted successfully")
+                        .status(204)
                         .build()
         );
     }

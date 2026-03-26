@@ -21,38 +21,72 @@ public class ClientController {
 
     @PreAuthorize("hasAnyRole('ADMIN')")
     @PostMapping
-    public ResponseEntity<ClientResponseDTO> createClient(@RequestBody ClientRequestDTO requestDTO) {
-        ClientResponseDTO clientResponseDTO = clientService.createClient(requestDTO);
-        return ResponseEntity.ok(clientResponseDTO);
+    public ResponseEntity<ApiResponse<ClientResponseDTO>> createClient(@RequestBody ClientRequestDTO requestDTO) {
+
+        ClientResponseDTO response = clientService.createClient(requestDTO);
+
+        return ResponseEntity.ok(
+                ApiResponse.<ClientResponseDTO>builder()
+                        .message("Client created successfully")
+                        .data(response)
+                        .status(201)
+                        .build()
+        );
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ClientResponseDTO> getById(@PathVariable UUID id) {
-        ClientResponseDTO dto = clientService.getById(id);
-        return ResponseEntity.ok(dto);
+    public ResponseEntity<ApiResponse<ClientResponseDTO>> getById(@PathVariable UUID id) {
+
+        ClientResponseDTO response = clientService.getById(id);
+
+        return ResponseEntity.ok(
+                ApiResponse.<ClientResponseDTO>builder()
+                        .message("Client fetched successfully")
+                        .data(response)
+                        .status(200)
+                        .build()
+        );
     }
 
     @GetMapping
-    public ResponseEntity<List<ClientResponseDTO>> getAll() {
+    public ResponseEntity<ApiResponse<List<ClientResponseDTO>>> getAll() {
+
         List<ClientResponseDTO> list = clientService.getAll();
-        return ResponseEntity.ok(list);
+
+        return ResponseEntity.ok(
+                ApiResponse.<List<ClientResponseDTO>>builder()
+                        .message("Clients fetched successfully")
+                        .data(list)
+                        .status(200)
+                        .build()
+        );
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ClientResponseDTO> updateClient(@PathVariable UUID id,
-                                                          @RequestBody ClientRequestDTO requestDTO) {
-        ClientResponseDTO updatedClient = clientService.update(id, requestDTO);
-        return ResponseEntity.ok(updatedClient);
+    public ResponseEntity<ApiResponse<ClientResponseDTO>> updateClient(
+            @PathVariable UUID id,
+            @RequestBody ClientRequestDTO requestDTO) {
+
+        ClientResponseDTO updated = clientService.update(id, requestDTO);
+
+        return ResponseEntity.ok(
+                ApiResponse.<ClientResponseDTO>builder()
+                        .message("Client updated successfully")
+                        .data(updated)
+                        .status(200)
+                        .build()
+        );
     }
 
-
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse> deleteClient(@PathVariable UUID id) {
+    public ResponseEntity<ApiResponse<Void>> deleteClient(@PathVariable UUID id) {
+
         clientService.deleteById(id);
+
         return ResponseEntity.ok(
-                ApiResponse.builder()
-                        .message("client deleted successfully")
-                        .status(203)
+                ApiResponse.<Void>builder()
+                        .message("Client deleted successfully")
+                        .status(204)
                         .build()
         );
     }
