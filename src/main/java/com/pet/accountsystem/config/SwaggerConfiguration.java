@@ -18,7 +18,7 @@ public class SwaggerConfiguration {
         return new OpenAPI()
                 .info(new Info().title("Resto API Acoount").version("1.0.0"))
                 .addSecurityItem(new SecurityRequirement().addList(securitySchemeName))
-                .servers(List.of(new Server().url("https://javatech.uz/").description("Production"),
+                .servers(List.of(new Server().url("http://185.252.233.59:6161/").description("Production"),
                         new Server().url("http://localhost:8585/").description("Localhost")))
                 .components(
                         new io.swagger.v3.oas.models.Components()
