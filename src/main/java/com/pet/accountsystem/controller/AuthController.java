@@ -4,6 +4,8 @@ import com.pet.accountsystem.dto.LoginDto;
 import com.pet.accountsystem.dto.response.ApiResponse;
 import com.pet.accountsystem.dto.response.LoginResponseDto;
 import com.pet.accountsystem.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,4 +33,21 @@ public class AuthController {
                         .build()
         );
     }
+
+
+
+    @PostMapping("/refresh")
+    public ResponseEntity<ApiResponse<LoginResponseDto>> refresh(HttpServletRequest request, HttpServletResponse response) {
+
+        LoginResponseDto refresh = userService.refresh(request, response);
+        return ResponseEntity.ok(
+                ApiResponse.<LoginResponseDto>builder()
+                        .message("The token is updated")
+                        .data(refresh)
+                        .status(200)
+                        .build()
+        );
+    }
+
+
 }

@@ -8,6 +8,12 @@ import com.pet.accountsystem.exception.NotAcceptableException;
 import com.pet.accountsystem.jwt.JwtTokenService;
 import com.pet.accountsystem.repository.UserRepository;
 import com.pet.accountsystem.service.UserService;
+import com.pet.accountsystem.service.auth.AuthenticationService;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -15,10 +21,13 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserDetailsService, UserService {
 
+    private final AuthenticationService authenticationService;
     private final UserRepository userRepository;
     private final JwtTokenService jwtTokenService;
     private final PasswordEncoder passwordEncoder;
@@ -37,11 +46,30 @@ public class UserServiceImpl implements UserDetailsService, UserService {
                 return LoginResponseDto.builder()
                         .userId(user.getId())
                         .role(user.getRole())
-                        .jwtToken(jwtTokenService.generateAccessToken(user))
+                        .accessToken(jwtTokenService.generateAccessToken(user))
+                        .refreshToken(jwtTokenService.generateRefreshToken(user))
                         .build();
             }
             throw new NotAcceptableException("Your account has blocked");
         }
         throw new NotAcceptableException("Your password is incorrect or you are not signed in");
     }
+
+    @Override
+    public LoginResponseDto refresh(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            String username= authenticationService.authenticateRefreshToken(request,response);
+            UserDetails userDetails = this.loadUserByUsername(username);
+            return LoginResponseDto.builder()
+                    .accessToken(jwtTokenService.generateAccessToken(userDetails))
+                    .refreshToken(jwtTokenService.generateRefreshToken(userDetails))
+                    .build();
+        } catch (ServletException | IOException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+
+
 }

@@ -10,6 +10,7 @@ import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
@@ -39,7 +40,7 @@ public class JwtTokenService {
         this.secretKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
     }
 
-    public String generateAccessToken(UserEntity userEntity) {
+    public String generateAccessToken(UserDetails userEntity) {
         Date expiryDate = new Date(System.currentTimeMillis() + accessTokenExpiry);
         return Jwts.builder()
                 .signWith(secretKey, SignatureAlgorithm.HS512)
@@ -50,13 +51,14 @@ public class JwtTokenService {
                 .compact();
     }
 
-    public String generateRefreshToken(UserEntity userEntity) {
+    public String generateRefreshToken(UserDetails userEntity) {
         Date expiryDate = new Date(System.currentTimeMillis() + refreshTokenExpiry);
         return Jwts.builder()
                 .signWith(secretKey, SignatureAlgorithm.HS512)
                 .setSubject(userEntity.getUsername())
                 .setIssuedAt(new Date())
                 .setExpiration(expiryDate)
+                .addClaims(Map.of("roles",getRoles(userEntity.getAuthorities())))
                 .compact();
     }
 
