@@ -4,8 +4,10 @@ import com.pet.accountsystem.dto.request.BazaRequestDTO;
 import com.pet.accountsystem.dto.response.ApiResponse;
 import com.pet.accountsystem.dto.response.BazaResponseDTO;
 import com.pet.accountsystem.service.BazaService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,13 +15,14 @@ import java.util.UUID;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/baza")
-public class BazaController {
+@RequestMapping("/api/base")
+public class BaseController {
 
     private final BazaService bazaService;
 
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @PostMapping
-    public ResponseEntity<BazaResponseDTO> create(@RequestBody BazaRequestDTO dto) {
+    public ResponseEntity<BazaResponseDTO> create(@Valid @RequestBody BazaRequestDTO dto) {
         return ResponseEntity.ok(bazaService.create(dto));
     }
 

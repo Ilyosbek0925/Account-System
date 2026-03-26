@@ -6,6 +6,7 @@ import com.pet.accountsystem.dto.response.ClientResponseDTO;
 import com.pet.accountsystem.service.ClientService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,6 +19,7 @@ public class ClientController {
 
     private final ClientService clientService;
 
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @PostMapping
     public ResponseEntity<ClientResponseDTO> createClient(@RequestBody ClientRequestDTO requestDTO) {
         ClientResponseDTO clientResponseDTO = clientService.createClient(requestDTO);

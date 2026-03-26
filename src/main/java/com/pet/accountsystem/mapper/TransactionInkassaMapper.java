@@ -41,10 +41,10 @@ public class TransactionInkassaMapper {
                         ? inkassa.getAgent().getId()
                         : null
         );
-        dto.setUsdAmount(inkassa.getUsdAmount());
-        dto.setUzsAmount(inkassa.getUzsAmount());
-        dto.setClickAmount(inkassa.getClickAmount());
-        dto.setBankAmount(inkassa.getBankAmount());
+//        dto.setUsdAmount(inkassa.getUsdAmount());
+//        dto.setUzsAmount(inkassa.getUzsAmount());
+//        dto.setClickAmount(inkassa.getClickAmount());
+//        dto.setBankAmount(inkassa.getBankAmount());
         dto.setDescription(inkassa.getDescription());
         return dto;
     }

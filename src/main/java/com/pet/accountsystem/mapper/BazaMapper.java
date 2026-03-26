@@ -2,38 +2,38 @@ package com.pet.accountsystem.mapper;
 
 import com.pet.accountsystem.dto.request.BazaRequestDTO;
 import com.pet.accountsystem.dto.response.BazaResponseDTO;
-import com.pet.accountsystem.entity.Baza;
+import com.pet.accountsystem.entity.Base;
 import org.springframework.stereotype.Component;
 
 @Component
 public class BazaMapper {
 
-    public Baza toEntity(BazaRequestDTO dto) {
+    public Base toEntity(BazaRequestDTO dto) {
         if (dto == null) return null;
 
-        Baza baza = new Baza();
-        baza.setRegion(dto.getRegion());
-        baza.setDistrict(dto.getDistrict());
-        baza.setGroupId(dto.getGroupId());
-        return baza;
+        Base base = new Base();
+        base.setRegion(dto.getRegion());
+        base.setDistrict(dto.getDistrict());
+        base.setGroupId(dto.getGroupId());
+        return base;
     }
 
-    public BazaResponseDTO toResponse(Baza baza) {
-        if (baza == null) return null;
+    public BazaResponseDTO toResponse(Base base) {
+        if (base == null) return null;
 
         BazaResponseDTO dto = new BazaResponseDTO();
-        dto.setId(baza.getId());
-        dto.setRegion(baza.getRegion());
-        dto.setDistrict(baza.getDistrict());
-        dto.setGroupId(baza.getGroupId());
+        dto.setId(base.getId());
+        dto.setRegion(base.getRegion());
+        dto.setDistrict(base.getDistrict());
+        dto.setGroupId(base.getGroupId());
         return dto;
     }
 
-    public void updateEntity(BazaRequestDTO dto, Baza baza) {
-        if (dto == null || baza == null) return;
+    public void updateEntity(BazaRequestDTO dto, Base base) {
+        if (dto == null || base == null) return;
 
-        baza.setRegion(dto.getRegion());
-        baza.setDistrict(dto.getDistrict());
-        baza.setGroupId(dto.getGroupId());
+        base.setRegion(dto.getRegion());
+        base.setDistrict(dto.getDistrict());
+        base.setGroupId(dto.getGroupId());
     }
 }

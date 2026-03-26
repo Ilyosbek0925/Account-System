@@ -1,35 +1,41 @@
 package com.pet.accountsystem.mapper;
 
 import com.pet.accountsystem.dto.request.TransactionIncomeRequestDTO;
-import com.pet.accountsystem.dto.response.TransactionIncomeResponseDTO;
+import com.pet.accountsystem.dto.request.TransactionTypeRequest;
+import com.pet.accountsystem.dto.response.TransactionIncomeResponse;
 import com.pet.accountsystem.entity.Agent;
 import com.pet.accountsystem.entity.Client;
 import com.pet.accountsystem.entity.TransactionIncome;
+import com.pet.accountsystem.entity.UnitTransaction;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.math.RoundingMode;
+import java.util.List;
+
 @Component
+@RequiredArgsConstructor
 public class TransactionIncomeMapper {
+
+    private final TransactionTypeMapper typeMapper;
+
 
     public TransactionIncome toEntity(TransactionIncomeRequestDTO dto,
                                       Agent agent,
                                       Client client) {
-        if (dto == null) return null;
-
         TransactionIncome income = new TransactionIncome();
         income.setAgent(agent);
         income.setClient(client);
-        income.setUsdAmount(dto.getUsdAmount());
-        income.setUzsAmount(dto.getUzsAmount());
-        income.setClickAmount(dto.getClickAmount());
-        income.setBankAmount(dto.getBankAmount());
         income.setDescription(dto.getDescription());
+        List<UnitTransaction> list = dto.getTypeRequests().stream().map(typeMapper::toTransactionType).toList();
+        income.setTypes(list);
         return income;
     }
 
-    public TransactionIncomeResponseDTO toResponse(TransactionIncome income) {
+    public TransactionIncomeResponse toResponse(TransactionIncome income) {
         if (income == null) return null;
 
-        TransactionIncomeResponseDTO dto = new TransactionIncomeResponseDTO();
+        TransactionIncomeResponse dto = new TransactionIncomeResponse();
         dto.setId(income.getId());
         dto.setAgentId(
                 income.getAgent() != null
@@ -41,10 +47,10 @@ public class TransactionIncomeMapper {
                         ? income.getClient().getId()
                         : null
         );
-        dto.setUsdAmount(income.getUsdAmount());
-        dto.setUzsAmount(income.getUzsAmount());
-        dto.setClickAmount(income.getClickAmount());
-        dto.setBankAmount(income.getBankAmount());
+
+
+        dto.setTotalAmount(income.getTotal().setScale(3, RoundingMode.DOWN).toString());
+        dto.setTypes(income.getTypes().stream().map(UnitTransaction::getTransactionType).toList());
         dto.setDescription(income.getDescription());
         return dto;
     }
@@ -57,10 +63,7 @@ public class TransactionIncomeMapper {
 
         income.setAgent(agent);
         income.setClient(client);
-        income.setUsdAmount(dto.getUsdAmount());
-        income.setUzsAmount(dto.getUzsAmount());
-        income.setClickAmount(dto.getClickAmount());
-        income.setBankAmount(dto.getBankAmount());
+
         income.setDescription(dto.getDescription());
     }
 }

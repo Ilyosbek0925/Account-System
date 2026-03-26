@@ -3,12 +3,16 @@ package com.pet.accountsystem.entity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.math.BigDecimal;
 
 @Entity
 @Getter
 @Setter
+@Table(name = "transaction_inkassa")
 public class TransactionInkassa extends BaseEntity {
 
     @ManyToOne
@@ -19,10 +23,10 @@ public class TransactionInkassa extends BaseEntity {
     @JoinColumn(name = "agent_id")
     private Agent agent;
 
-    private String usdAmount;
-    private String uzsAmount;
-    private String clickAmount;
-    private String bankAmount;
+    private BigDecimal usdAmount;
+    private BigDecimal uzsAmount;
+    private BigDecimal clickAmount;
+    private BigDecimal bankAmount;
 
     private String description;
 }

@@ -4,14 +4,15 @@ import com.pet.accountsystem.dto.request.AgentBalanceRequestDTO;
 import com.pet.accountsystem.dto.response.AgentBalanceResponseDTO;
 import com.pet.accountsystem.entity.Agent;
 import com.pet.accountsystem.entity.AgentBalance;
+import com.pet.accountsystem.util.FormatUtil;
 import org.springframework.stereotype.Component;
+
+import java.text.Normalizer;
 
 @Component
 public class AgentBalanceMapper {
 
     public AgentBalance toEntity(AgentBalanceRequestDTO dto, Agent agent) {
-        if (dto == null) return null;
-
         AgentBalance balance = new AgentBalance();
         balance.setUsdAmount(dto.getUsdAmount());
         balance.setUzsAmount(dto.getUzsAmount());
@@ -26,10 +27,10 @@ public class AgentBalanceMapper {
 
         return AgentBalanceResponseDTO.builder()
                 .id(balance.getId())
-                .usdAmount(balance.getUsdAmount())
-                .uzsAmount(balance.getUzsAmount())
-                .clickAmount(balance.getClickAmount())
-                .bankAmount(balance.getBankAmount())
+                .usdAmount(FormatUtil.toScale(balance.getUsdAmount()))
+                .uzsAmount(FormatUtil.toScale(balance.getUzsAmount()))
+                .clickAmount(FormatUtil.toScale(balance.getClickAmount()))
+                .bankAmount(FormatUtil.toScale(balance.getBankAmount()))
                 .agentId(
                         balance.getAgent() != null
                                 ? balance.getAgent().getId()

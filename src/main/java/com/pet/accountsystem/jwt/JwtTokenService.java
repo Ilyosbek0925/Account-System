@@ -7,6 +7,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @Service
 public class JwtTokenService {
 
@@ -65,6 +67,7 @@ public class JwtTokenService {
     }
 
     public Jws<Claims> extractToken(String token) {
+        log.warn("at least chack");
         return Jwts.parserBuilder()
                 .setSigningKey(secretKey)
                 .build()

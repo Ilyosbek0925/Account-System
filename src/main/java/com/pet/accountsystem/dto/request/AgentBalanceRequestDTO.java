@@ -3,6 +3,7 @@ package com.pet.accountsystem.dto.request;
 
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
@@ -11,10 +12,10 @@ import java.util.UUID;
 @Builder
 public class AgentBalanceRequestDTO {
 
-    private String usdAmount;
-    private String uzsAmount;
-    private String clickAmount;
-    private String bankAmount;
+    private BigDecimal usdAmount;
+    private BigDecimal uzsAmount;
+    private BigDecimal clickAmount;
+    private BigDecimal bankAmount;
     private UUID agentId;
 
 }

@@ -2,7 +2,7 @@ package com.pet.accountsystem.service.impl;
 
 import com.pet.accountsystem.dto.request.ClientRequestDTO;
 import com.pet.accountsystem.dto.response.ClientResponseDTO;
-import com.pet.accountsystem.entity.Baza;
+import com.pet.accountsystem.entity.Base;
 import com.pet.accountsystem.entity.Client;
 import com.pet.accountsystem.exception.DataNotFoundException;
 import com.pet.accountsystem.mapper.ClientMapper;
@@ -29,11 +29,11 @@ public class ClientServiceImpl implements ClientService {
     public ClientResponseDTO createClient(ClientRequestDTO requestDTO) {
         log.info("Creating client with bazaId={}", requestDTO.getBazaId());
 
-        Baza baza = bazaRepository.findById(requestDTO.getBazaId())
+        Base base = bazaRepository.findById(requestDTO.getBazaId())
                 .orElseThrow(() ->
                         new DataNotFoundException("Baza not found: " + requestDTO.getBazaId()));
 
-        Client client = clientMapper.toEntity(requestDTO, baza);
+        Client client = clientMapper.toEntity(requestDTO, base);
         Client saved = clientRepository.save(client);
 
         log.info("Client created with id={}", saved.getId());
@@ -69,11 +69,11 @@ public class ClientServiceImpl implements ClientService {
                 .orElseThrow(() ->
                         new DataNotFoundException("Client not found: " + id));
 
-        Baza baza = bazaRepository.findById(requestDTO.getBazaId())
+        Base base = bazaRepository.findById(requestDTO.getBazaId())
                 .orElseThrow(() ->
                         new DataNotFoundException("Baza not found: " + requestDTO.getBazaId()));
 
-        clientMapper.updateEntity(requestDTO, client, baza);
+        clientMapper.updateEntity(requestDTO, client, base);
         Client saved = clientRepository.save(client);
 
         log.info("Client updated id={}", saved.getId());

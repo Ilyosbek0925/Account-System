@@ -1,6 +1,6 @@
 package com.pet.accountsystem.dto.response;
 
-import com.pet.accountsystem.entity.Role;
+import com.pet.accountsystem.entity.enums.Role;
 import lombok.*;
 import java.util.UUID;
 
@@ -14,17 +14,15 @@ public class AgentResponseDTO {
 
 
     private UUID id;
-    private String fullName;
+    private String firstName;
+    private String lastName;
     private String phoneNumber;
 
     private String email;
 
     private Role role;
 
-
     private boolean isActive;
-
-    private String password;
 
     private UUID bazaId;
 }

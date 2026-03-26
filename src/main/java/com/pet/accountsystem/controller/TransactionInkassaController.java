@@ -39,14 +39,5 @@ public class TransactionInkassaController {
         return ResponseEntity.ok(transactionInkassaService.update(id, dto));
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse> delete(@PathVariable UUID id) {
-        transactionInkassaService.deleteById(id);
-        return ResponseEntity.ok(
-                ApiResponse.builder()
-                        .message("transaction inkassa deleted successfully")
-                        .status(203)
-                        .build()
-        );
-    }
+
 }

@@ -3,23 +3,24 @@ package com.pet.accountsystem.mapper;
 import com.pet.accountsystem.dto.request.AgentRequestDTO;
 import com.pet.accountsystem.dto.response.AgentResponseDTO;
 import com.pet.accountsystem.entity.Agent;
-import com.pet.accountsystem.entity.Baza;
+import com.pet.accountsystem.entity.Base;
 import org.springframework.stereotype.Component;
 
 @Component
 public class AgentMapper {
 
-    public Agent toEntity(AgentRequestDTO dto, Baza baza) {
+    public Agent toEntity(AgentRequestDTO dto, Base base) {
         if (dto == null) return null;
 
         Agent agent = new Agent();
-        agent.setFullName(dto.getFullName());
+        agent.setFirstName(dto.getFirstName());
+        agent.setLastName(dto.getLastName());
         agent.setPhoneNumber(dto.getPhoneNumber());
         agent.setEmail(dto.getEmail());
         agent.setRole(dto.getRole());
-        agent.setActive(dto.isActive());
+        agent.setIsActive(dto.getIsActive());
         agent.setPassword(dto.getPassword());
-        agent.setBaza(baza);
+        agent.setBase(base);
         return agent;
     }
 
@@ -28,28 +29,29 @@ public class AgentMapper {
 
         AgentResponseDTO dto = new AgentResponseDTO();
         dto.setId(agent.getId());
-        dto.setFullName(agent.getFullName());
+        dto.setFirstName(agent.getFirstName());
+        dto.setLastName(agent.getLastName());
         dto.setPhoneNumber(agent.getPhoneNumber());
         dto.setEmail(agent.getEmail());
         dto.setRole(agent.getRole());
-        dto.setActive(agent.isActive());
+        dto.setActive(agent.getIsActive());
         dto.setBazaId(
-                agent.getBaza() != null
-                        ? agent.getBaza().getId()
+                agent.getBase() != null
+                        ? agent.getBase().getId()
                         : null
         );
         return dto;
     }
 
-    public void updateEntity(AgentRequestDTO dto, Agent agent, Baza baza) {
-        if (dto == null || agent == null) return;
+    public void updateEntity(AgentRequestDTO dto, Agent agent, Base base) {
 
-        agent.setFullName(dto.getFullName());
+        agent.setFirstName(dto.getFirstName());
+        agent.setLastName(dto.getLastName());
         agent.setPhoneNumber(dto.getPhoneNumber());
         agent.setEmail(dto.getEmail());
         agent.setRole(dto.getRole());
-        agent.setActive(dto.isActive());
+        agent.setIsActive(dto.getIsActive());
         agent.setPassword(dto.getPassword());
-        agent.setBaza(baza);
+        agent.setBase(base);
     }
 }

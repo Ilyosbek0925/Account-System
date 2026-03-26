@@ -1,17 +1,16 @@
 package com.pet.accountsystem.mapper;
 
 import com.pet.accountsystem.dto.request.AdminBalanceRequestDTO;
-import com.pet.accountsystem.dto.request.AgentBalanceRequestDTO;
 import com.pet.accountsystem.dto.response.AdminBalanceResponseDTO;
 import com.pet.accountsystem.entity.Admin;
 import com.pet.accountsystem.entity.AdminBalance;
+import com.pet.accountsystem.util.FormatUtil;
 import org.springframework.stereotype.Component;
 
 @Component
 public class AdminBalanceMapper {
 
     public AdminBalance toEntity(AdminBalanceRequestDTO dto, Admin admin) {
-        if (dto == null) return null;
 
         AdminBalance balance = new AdminBalance();
         balance.setUsdAmount(dto.getUsdAmount());
@@ -20,6 +19,7 @@ public class AdminBalanceMapper {
         balance.setBankAmount(dto.getBankAmount());
         balance.setAdmin(admin);
         return balance;
+
     }
 
     public AdminBalanceResponseDTO toResponse(AdminBalance balance) {
@@ -27,10 +27,10 @@ public class AdminBalanceMapper {
 
         return AdminBalanceResponseDTO.builder()
                 .id(balance.getId())
-                .usdAmount(balance.getUsdAmount())
-                .uzsAmount(balance.getUzsAmount())
-                .clickAmount(balance.getClickAmount())
-                .bankAmount(balance.getBankAmount())
+                .usdAmount(FormatUtil.toScale(balance.getUsdAmount()))
+                .uzsAmount(FormatUtil.toScale(balance.getUzsAmount()))
+                .clickAmount(FormatUtil.toScale(balance.getClickAmount()))
+                .bankAmount(FormatUtil.toScale(balance.getBankAmount()))
                 .adminId(
                         balance.getAdmin() != null
                                 ? balance.getAdmin().getId()
@@ -40,8 +40,6 @@ public class AdminBalanceMapper {
     }
 
     public void updateEntity(AdminBalanceRequestDTO dto, AdminBalance balance) {
-        if (dto == null || balance == null) return;
-
         balance.setUsdAmount(dto.getUsdAmount());
         balance.setUzsAmount(dto.getUzsAmount());
         balance.setClickAmount(dto.getClickAmount());

@@ -2,46 +2,51 @@ package com.pet.accountsystem.mapper;
 
 import com.pet.accountsystem.dto.request.ClientRequestDTO;
 import com.pet.accountsystem.dto.response.ClientResponseDTO;
-import com.pet.accountsystem.entity.Baza;
+import com.pet.accountsystem.entity.Base;
 import com.pet.accountsystem.entity.Client;
 import org.springframework.stereotype.Component;
 
 @Component
 public class ClientMapper {
 
-    public Client toEntity(ClientRequestDTO dto, Baza baza) {
-        if (dto == null) return null;
+    public Client toEntity(ClientRequestDTO dto, Base base) {
 
         Client client = new Client();
+        client.setFirstName(dto.getFirstName());
+        client.setLastName(dto.getLastName());
+        client.setPhoneNumber(dto.getPhoneNumber());
         client.setStatus(dto.getStatus());
         client.setGroupId(dto.getGroupId());
         client.setClientType(dto.getClientType());
-        client.setBaza(baza);
+        client.setBase(base);
         return client;
     }
 
     public ClientResponseDTO toResponse(Client client) {
-        if (client == null) return null;
 
         ClientResponseDTO dto = new ClientResponseDTO();
+        dto.setFirstName(client.getFirstName());
+        dto.setLastName(client.getLastName());
         dto.setId(client.getId());
         dto.setStatus(client.getStatus());
+
         dto.setGroupId(client.getGroupId());
         dto.setClientType(client.getClientType());
         dto.setBazaId(
-                client.getBaza() != null
-                        ? client.getBaza().getId()
+                client.getBase() != null
+                        ? client.getBase().getId()
                         : null
         );
         return dto;
     }
 
-    public void updateEntity(ClientRequestDTO dto, Client client, Baza baza) {
-        if (dto == null || client == null) return;
-
+    public void updateEntity(ClientRequestDTO dto, Client client, Base base) {
+        client.setPhoneNumber(dto.getPhoneNumber());
+        client.setFirstName(dto.getFirstName());
+        client.setLastName(dto.getLastName());
         client.setStatus(dto.getStatus());
         client.setGroupId(dto.getGroupId());
         client.setClientType(dto.getClientType());
-        client.setBaza(baza);
+        client.setBase(base);
     }
 }

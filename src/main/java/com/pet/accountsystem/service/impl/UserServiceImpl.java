@@ -2,6 +2,7 @@ package com.pet.accountsystem.service.impl;
 
 import com.pet.accountsystem.dto.LoginDto;
 import com.pet.accountsystem.dto.response.ApiResponse;
+import com.pet.accountsystem.dto.response.LoginResponseDto;
 import com.pet.accountsystem.entity.UserEntity;
 import com.pet.accountsystem.exception.DataNotFoundException;
 import com.pet.accountsystem.exception.NotAcceptableException;
@@ -29,15 +30,16 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         return userRepository.findByEmail(email).orElseThrow(() -> new DataNotFoundException("User not found"));
 
     }
+
     @Override
-    public ResponseEntity<ApiResponse<?>> login(LoginDto loginDto) {
-        UserEntity user = userRepository.findByEmail(loginDto.getMail()).orElseThrow(() -> new DataNotFoundException("User not found"));
+    public ResponseEntity<LoginResponseDto> login(LoginDto loginDto) {
+        UserEntity user = userRepository.findByEmail(loginDto.getEmail()).orElseThrow(() -> new DataNotFoundException("User not found"));
         if (passwordEncoder.matches(loginDto.getPassword(), user.getPassword())) {
-            if (user.isActive()) {
-                return ResponseEntity.ok(ApiResponse.builder()
-                        .data((jwtTokenService.generateAccessToken(user)))
-                        .message("Login in system")
-                        .status(200)
+            if (user.getIsActive()) {
+                return ResponseEntity.ok(LoginResponseDto.builder()
+                        .userId(user.getId())
+                        .role(user.getRole())
+                        .jwtToken(jwtTokenService.generateAccessToken(user))
                         .build());
             }
             throw new NotAcceptableException("Your account has blocked");

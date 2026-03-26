@@ -1,15 +1,16 @@
 package com.pet.accountsystem.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
 @Entity
 @Getter
 @Setter
+@Table(name = "clients")
 public class Client extends BaseEntity {
+    private String firstName;
+    private String lastName;
 
     private String status;
 
@@ -17,7 +18,10 @@ public class Client extends BaseEntity {
 
     private String clientType;
 
+    @Column(unique = true)
+    private String phoneNumber;
+
     @ManyToOne
     @JoinColumn(name = "baza_id")
-    private Baza baza;
+    private Base base;
 }
