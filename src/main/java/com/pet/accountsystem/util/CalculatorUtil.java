@@ -1,6 +1,5 @@
 package com.pet.accountsystem.util;
 
-import com.pet.accountsystem.dto.response.UnitTransactionResponse;
 import com.pet.accountsystem.entity.UnitTransaction;
 
 import java.math.BigDecimal;
@@ -12,10 +11,9 @@ public final class CalculatorUtil {
     }
 
     public static BigDecimal setTransactionIncomeTotalAmount(List<UnitTransaction> unitTransactions) {
-        BigDecimal total = unitTransactions.stream()
+        return unitTransactions.stream()
                 .map(UnitTransaction::getUsdAmount)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
-        return total;
     }
 
 

@@ -27,12 +27,10 @@ public class TransactionIncomeMapper {
         income.setAgent(agent);
         income.setClient(client);
         income.setDescription(dto.getDescription());
-        List<UnitTransaction> list = dto.getTypeRequests().stream().map(typeMapper::toTransactionType).toList();
-        income.setTypes(list);
         return income;
     }
 
-    public TransactionIncomeResponse toResponse(TransactionIncome income) {
+    public TransactionIncomeResponse toResponse(TransactionIncome income, List<UnitTransaction> unitTransactions) {
         if (income == null) return null;
 
         TransactionIncomeResponse dto = new TransactionIncomeResponse();
@@ -50,7 +48,7 @@ public class TransactionIncomeMapper {
 
 
         dto.setTotalAmount(income.getTotal().setScale(3, RoundingMode.DOWN).toString());
-        dto.setTypes(income.getTypes().stream().map(UnitTransaction::getTransactionType).toList());
+        dto.setTypes(unitTransactions.stream().map(UnitTransaction::getTransactionType).toList());
         dto.setDescription(income.getDescription());
         return dto;
     }

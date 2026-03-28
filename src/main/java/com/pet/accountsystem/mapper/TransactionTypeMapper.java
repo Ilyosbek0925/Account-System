@@ -14,11 +14,12 @@ import java.util.List;
 public class TransactionTypeMapper {
 
 
-    public UnitTransaction toTransactionType(TransactionTypeRequest request) {
+    public UnitTransaction toTransactionType(TransactionTypeRequest request, TransactionIncome saved) {
         UnitTransaction entity = new UnitTransaction();
         entity.setTransactionType(request.getType());
         entity.setAmount(request.getAmount());
         entity.setCurrency(request.getCurrency());
+        entity.setTransactionIncome(saved);
         return entity;
     }
 

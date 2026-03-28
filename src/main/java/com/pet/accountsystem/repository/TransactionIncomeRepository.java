@@ -52,7 +52,6 @@ public interface TransactionIncomeRepository extends JpaRepository<TransactionIn
                 ut.usd_amount as usdAmount
             from transaction_income ti
             join clients c on c.id = ti.client_id
-            join agents ag on ag.id = ti.agent_id
             join unit_transactions ut on ut.transaction_income_id = ti.id
             where (ti.agent_id=:agentId) and
                             (:transactionType is null or ut.transaction_type = :transactionType)
@@ -72,7 +71,7 @@ public interface TransactionIncomeRepository extends JpaRepository<TransactionIn
             nativeQuery = true)
     Page<TransactionReportProjection> findTransactions(
             @Param(("agentId")) UUID agentId,
-            @Param("transactionType") TransactionType transactionType,
+            @Param("transactionType") String transactionType,
             @Param("fromDate") LocalDate fromDate,
             @Param("toDate") LocalDate toDate,
             Pageable pageable

@@ -15,14 +15,11 @@ import com.pet.accountsystem.repository.TransactionIncomeRepository;
 import com.pet.accountsystem.repository.TransactionTypeRepository;
 import com.pet.accountsystem.service.CurrencyService;
 import com.pet.accountsystem.service.TransactionIncomeService;
-import com.pet.accountsystem.specification.TransactionIncomeSpecification;
-import com.pet.accountsystem.specification.TransactionTypeSpecification;
 import com.pet.accountsystem.util.CalculatorUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,9 +29,11 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+
 @Slf4j
 public class TransactionIncomeServiceImpl implements TransactionIncomeService {
-
+    private final TransactionTypeRepository unitTransactionRepository;
+    private final TransactionTypeMapper typeMapper;
     private final TransactionIncomeRepository transactionIncomeRepository;
     private final AgentRepository agentRepository;
     private final ClientRepository clientRepository;
@@ -52,12 +51,16 @@ public class TransactionIncomeServiceImpl implements TransactionIncomeService {
         Client client = clientRepository.findById(dto.getClientId())
                 .orElseThrow(() -> new DataNotFoundException("Client not found: " + dto.getClientId()));
 
-        TransactionIncome income = transactionIncomeMapper.toEntity(dto, agent, client);
-        currencyService.setUsdAmountToUnitTransactions(income.getTypes());
-        income.setTotal(CalculatorUtil.setTransactionIncomeTotalAmount(income.getTypes()));
-        TransactionIncome saved = transactionIncomeRepository.save(income);
-        log.info("Transaction income created id={}", saved.getId());
-        return transactionIncomeMapper.toResponse(saved);
+        TransactionIncome transactionIncome = transactionIncomeMapper.toEntity(dto, agent, client);
+        TransactionIncome income = transactionIncomeRepository.save(transactionIncome);
+        List<UnitTransaction> list = dto.getTypeRequests().stream().map(request -> typeMapper.toTransactionType(request, income)).toList();
+        currencyService.setUsdAmountToUnitTransactions(list);
+        income.setTotal(CalculatorUtil.setTransactionIncomeTotalAmount(list));
+        transactionIncomeRepository.save(income);
+        List<UnitTransaction> saved = unitTransactionRepository.saveAll(list);
+
+        log.info("Transaction income created id={}", saved.get(0).getId());
+        return transactionIncomeMapper.toResponse(saved.get(0).getTransactionIncome(),list);
     }
 
     @Override
@@ -67,7 +70,7 @@ public class TransactionIncomeServiceImpl implements TransactionIncomeService {
         TransactionIncome income = transactionIncomeRepository.findById(id)
                 .orElseThrow(() -> new DataNotFoundException("TransactionIncome not found: " + id));
 
-        return transactionIncomeMapper.toResponse(income);
+        return null;
     }
 
     // client info
@@ -75,10 +78,10 @@ public class TransactionIncomeServiceImpl implements TransactionIncomeService {
     @Override
     public List<TransactionIncomeResponse> getAllByAgentId(UUID agentId, LocalDate startDate, LocalDate endDate, TransactionType type, Pageable pageable) {
 
-        Page<TransactionReportProjection> transactions = transactionIncomeRepository.findTransactions(agentId, type, startDate, endDate, pageable);
+        Page<TransactionReportProjection> transactions = transactionIncomeRepository.findTransactions(agentId, type.toString(), startDate, endDate, pageable);
 
         transactions.forEach(transactionReportProjection -> System.out.println(transactionReportProjection.getUsdAmount()));
-return null;
+        return null;
     }
 
     @Override
@@ -103,7 +106,7 @@ return null;
         TransactionIncome saved = transactionIncomeRepository.save(income);
 
         log.info("Transaction income updated id={}", saved.getId());
-        return transactionIncomeMapper.toResponse(saved);
+        return null;
     }
 
     @Override
