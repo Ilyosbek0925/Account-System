@@ -46,7 +46,7 @@ public class GlobalExceptionHandler {
                         ApiResponse.<String>builder()
                                 .status(401)
                                 .message("User not authorized")
-                                .data("User is not authorized or token expired")
+                                .data(e.getMessage())
                                 .build()
                 );
     }
