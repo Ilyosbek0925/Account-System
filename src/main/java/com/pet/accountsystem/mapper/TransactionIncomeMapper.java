@@ -1,12 +1,14 @@
 package com.pet.accountsystem.mapper;
 
 import com.pet.accountsystem.dto.request.TransactionIncomeRequestDTO;
-import com.pet.accountsystem.dto.request.TransactionTypeRequest;
+import com.pet.accountsystem.dto.response.TransactionIncomeByAgentResponse;
 import com.pet.accountsystem.dto.response.TransactionIncomeResponse;
 import com.pet.accountsystem.entity.Agent;
 import com.pet.accountsystem.entity.Client;
 import com.pet.accountsystem.entity.TransactionIncome;
 import com.pet.accountsystem.entity.UnitTransaction;
+import com.pet.accountsystem.projection.TransactionAllTypeProjection;
+import com.pet.accountsystem.projection.TransactionReportProjection;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -29,6 +31,19 @@ public class TransactionIncomeMapper {
         income.setDescription(dto.getDescription());
         return income;
     }
+
+
+
+
+    public TransactionIncomeByAgentResponse toTransactionAgentResponse(TransactionReportProjection projection){
+        return TransactionIncomeByAgentResponse.builder()
+                .transactionDate(projection.getTransactionDate())
+                .clientFirstName(projection.getFirstName())
+                .clientLastName(projection.getLastName())
+                .totalAmount(projection.getUsdAmount())
+                .build();
+    }
+
 
     public TransactionIncomeResponse toResponse(TransactionIncome income, List<UnitTransaction> unitTransactions) {
         if (income == null) return null;
@@ -63,5 +78,17 @@ public class TransactionIncomeMapper {
         income.setClient(client);
 
         income.setDescription(dto.getDescription());
+    }
+
+    public TransactionIncomeByAgentResponse toTransactionAgentResponse(TransactionAllTypeProjection projection) {
+        return TransactionIncomeByAgentResponse.builder()
+                .transactionDate(projection.getTransactionDate())
+                .clientFirstName(projection.getFirstName())
+                .clientLastName(projection.getLastName())
+                .totalAmount(projection.getUsdAmount())
+                .types(projection.getTypes())
+                .build();
+
+
     }
 }

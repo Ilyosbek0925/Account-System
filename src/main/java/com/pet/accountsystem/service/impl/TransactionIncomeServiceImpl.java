@@ -2,12 +2,14 @@ package com.pet.accountsystem.service.impl;
 
 import com.pet.accountsystem.dto.TotalTransactionDTO;
 import com.pet.accountsystem.dto.request.TransactionIncomeRequestDTO;
+import com.pet.accountsystem.dto.response.TransactionIncomeByAgentResponse;
 import com.pet.accountsystem.dto.response.TransactionIncomeResponse;
 import com.pet.accountsystem.entity.*;
 import com.pet.accountsystem.entity.enums.TransactionType;
 import com.pet.accountsystem.exception.DataNotFoundException;
 import com.pet.accountsystem.mapper.TransactionIncomeMapper;
 import com.pet.accountsystem.mapper.TransactionTypeMapper;
+import com.pet.accountsystem.projection.TransactionAllTypeProjection;
 import com.pet.accountsystem.projection.TransactionReportProjection;
 import com.pet.accountsystem.repository.AgentRepository;
 import com.pet.accountsystem.repository.ClientRepository;
@@ -24,6 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -60,7 +63,7 @@ public class TransactionIncomeServiceImpl implements TransactionIncomeService {
         List<UnitTransaction> saved = unitTransactionRepository.saveAll(list);
 
         log.info("Transaction income created id={}", saved.get(0).getId());
-        return transactionIncomeMapper.toResponse(saved.get(0).getTransactionIncome(),list);
+        return transactionIncomeMapper.toResponse(saved.get(0).getTransactionIncome(), list);
     }
 
     @Override
@@ -73,15 +76,27 @@ public class TransactionIncomeServiceImpl implements TransactionIncomeService {
         return null;
     }
 
-    // client info
 
     @Override
-    public List<TransactionIncomeResponse> getAllByAgentId(UUID agentId, LocalDate startDate, LocalDate endDate, TransactionType type, Pageable pageable) {
+    public List<TransactionIncomeByAgentResponse> getAllByAgentId(UUID agentId, LocalDate startDate, LocalDate endDate, TransactionType type, Pageable pageable) {
+        LocalDateTime fromDateTime = null;
+        LocalDateTime toDateTime = null;
+        if (startDate != null) {
+            fromDateTime = startDate.atStartOfDay();
+        }
+        if (endDate != null) {
+            toDateTime = endDate.atTime(23, 59, 59);
+        }
 
-        Page<TransactionReportProjection> transactions = transactionIncomeRepository.findTransactions(agentId, type.toString(), startDate, endDate, pageable);
 
-        transactions.forEach(transactionReportProjection -> System.out.println(transactionReportProjection.getUsdAmount()));
-        return null;
+        if (type == null) {
+            Page<TransactionAllTypeProjection> allTypeProjections = transactionIncomeRepository.findTransactionsByAllTypes(agentId, fromDateTime, toDateTime, pageable);
+            return allTypeProjections.stream().map(transactionIncomeMapper::toTransactionAgentResponse).toList();
+        }
+
+
+        Page<TransactionReportProjection> transactions = transactionIncomeRepository.findTransactions(agentId, type.toString(), fromDateTime, toDateTime, pageable);
+        return transactions.stream().map(transactionIncomeMapper::toTransactionAgentResponse).toList();
     }
 
     @Override

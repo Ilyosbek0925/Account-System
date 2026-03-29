@@ -2,6 +2,7 @@ package com.pet.accountsystem.service;
 
 import com.pet.accountsystem.dto.TotalTransactionDTO;
 import com.pet.accountsystem.dto.request.TransactionIncomeRequestDTO;
+import com.pet.accountsystem.dto.response.TransactionIncomeByAgentResponse;
 import com.pet.accountsystem.dto.response.TransactionIncomeResponse;
 import com.pet.accountsystem.entity.enums.TransactionType;
 import org.springframework.data.domain.Pageable;
@@ -20,7 +21,7 @@ public interface TransactionIncomeService {
 
     void deleteById(UUID id);
 
-    List<TransactionIncomeResponse> getAllByAgentId(UUID agentId, LocalDate startDate, LocalDate endDate, TransactionType type, Pageable pageable);
+    List<TransactionIncomeByAgentResponse> getAllByAgentId(UUID agentId, LocalDate startDate, LocalDate endDate, TransactionType type, Pageable pageable);
 
      TotalTransactionDTO getTotalByAgentId(UUID agentId);
 }

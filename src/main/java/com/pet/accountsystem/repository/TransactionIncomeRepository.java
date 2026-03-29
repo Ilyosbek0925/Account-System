@@ -3,7 +3,7 @@ package com.pet.accountsystem.repository;
 import com.pet.accountsystem.dto.TotalTransactionDTO;
 import com.pet.accountsystem.entity.Agent;
 import com.pet.accountsystem.entity.TransactionIncome;
-import com.pet.accountsystem.entity.enums.TransactionType;
+import com.pet.accountsystem.projection.TransactionAllTypeProjection;
 import com.pet.accountsystem.projection.TransactionReportProjection;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,7 +13,6 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -43,8 +42,7 @@ public interface TransactionIncomeRepository extends JpaRepository<TransactionIn
     TotalTransactionDTO getTotalTransaction(@Param("agentId") UUID agentId);
 
 
-
-    @Query(value = """
+        @Query(value = """
             select
                 c.first_name as firstName,
                 c.last_name as lastName,
@@ -53,27 +51,68 @@ public interface TransactionIncomeRepository extends JpaRepository<TransactionIn
             from transaction_income ti
             join clients c on c.id = ti.client_id
             join unit_transactions ut on ut.transaction_income_id = ti.id
-            where (ti.agent_id=:agentId) and
-                            (:transactionType is null or ut.transaction_type = :transactionType)
-              and (:fromDate is null or ti.created_at >= :fromDate)
-              and (:toDate is null or ti.created_at <= :toDate)
+            where ti.agent_id = :agentId
+              and (:transactionType is null or ut.transaction_type = cast(:transactionType as varchar))
+              and (cast(:fromDate as timestamp) is null or ti.created_at >= cast(:fromDate as timestamp))
+              and (cast(:toDate as timestamp) is null or ti.created_at < cast(:toDate as timestamp))
             order by ti.created_at desc
             """,
-            countQuery = """
+                countQuery = """
             select count(*)
             from transaction_income ti
-            join client c on c.id = ti.client_id
+            join clients c on c.id = ti.client_id
             join unit_transactions ut on ut.transaction_income_id = ti.id
-            where (:transactionType is null or ut.transaction_type = :transactionType)
-              and (:fromDate is null or ti.created_at >= :fromDate)
-              and (:toDate is null or ti.created_at <= :toDate)
+            where ti.agent_id = :agentId
+              and (:transactionType is null or ut.transaction_type = cast(:transactionType as varchar))
+              and (cast(:fromDate as timestamp) is null or ti.created_at >= cast(:fromDate as timestamp))
+              and (cast(:toDate as timestamp) is null or ti.created_at < cast(:toDate as timestamp))
             """,
+                nativeQuery = true)
+        Page<TransactionReportProjection> findTransactions(
+                @Param("agentId") UUID agentId,
+                @Param("transactionType") String transactionType,
+                @Param("fromDate") LocalDateTime fromDate,
+                @Param("toDate") LocalDateTime toDate,
+                Pageable pageable
+        );
+
+
+
+
+    @Query(value = """
+        select
+            c.first_name as firstName,
+            c.last_name as lastName,
+            ti.created_at as transactionDate,
+            ti.total as usdAmount,
+            string_agg(distinct cast(ut.transaction_type as varchar), ',') as types
+        from transaction_income ti
+        join clients c on c.id = ti.client_id
+        join unit_transactions ut on ut.transaction_income_id = ti.id
+        where ti.agent_id = :agentId
+          and (cast(:fromDateTime as timestamp) is null or ti.created_at >= cast(:fromDateTime as timestamp))
+          and (cast(:toDateTime as timestamp) is null or ti.created_at < cast(:toDateTime as timestamp))
+        group by ti.id, c.first_name, c.last_name, ti.created_at, ti.total
+        order by ti.created_at desc
+        """,
+            countQuery = """
+        select count(*)
+        from (
+            select ti.id
+            from transaction_income ti
+            join clients c on c.id = ti.client_id
+            join unit_transactions ut on ut.transaction_income_id = ti.id
+            where ti.agent_id = :agentId
+              and (cast(:fromDateTime as timestamp) is null or ti.created_at >= cast(:fromDateTime as timestamp))
+              and (cast(:toDateTime as timestamp) is null or ti.created_at < cast(:toDateTime as timestamp))
+            group by ti.id
+        ) t
+        """,
             nativeQuery = true)
-    Page<TransactionReportProjection> findTransactions(
-            @Param(("agentId")) UUID agentId,
-            @Param("transactionType") String transactionType,
-            @Param("fromDate") LocalDate fromDate,
-            @Param("toDate") LocalDate toDate,
+    Page<TransactionAllTypeProjection> findTransactionsByAllTypes(
+            @Param("agentId") UUID agentId,
+            @Param("fromDateTime") LocalDateTime fromDateTime,
+            @Param("toDateTime") LocalDateTime toDateTime,
             Pageable pageable
     );
 }

@@ -3,6 +3,7 @@ package com.pet.accountsystem.controller;
 import com.pet.accountsystem.dto.TotalTransactionDTO;
 import com.pet.accountsystem.dto.request.TransactionIncomeRequestDTO;
 import com.pet.accountsystem.dto.response.ApiResponse;
+import com.pet.accountsystem.dto.response.TransactionIncomeByAgentResponse;
 import com.pet.accountsystem.dto.response.TransactionIncomeResponse;
 import com.pet.accountsystem.entity.enums.TransactionType;
 import com.pet.accountsystem.service.TransactionIncomeService;
@@ -72,7 +73,7 @@ public class TransactionIncomeController {
     }
 
     @GetMapping("/agent/{agentId}")
-    public ResponseEntity<ApiResponse<List<TransactionIncomeResponse>>> getAllByAgentId(
+    public ResponseEntity<ApiResponse<List<TransactionIncomeByAgentResponse>>> getAllByAgentId(
             @PathVariable UUID agentId,
             @RequestParam(required = false) TransactionType type,
             @RequestParam(required = false) LocalDate fromDate,
@@ -82,13 +83,13 @@ public class TransactionIncomeController {
     ) {
         Pageable pageable = PageRequest.of(page, size);
 
-        List<TransactionIncomeResponse> response =
-                transactionIncomeService.getAllByAgentId(agentId, fromDate, toDate, type, pageable);
+
+        List<TransactionIncomeByAgentResponse> allByAgentId = transactionIncomeService.getAllByAgentId(agentId, fromDate, toDate, type, pageable);
 
         return ResponseEntity.ok(
-                ApiResponse.<List<TransactionIncomeResponse>>builder()
+                ApiResponse.<List<TransactionIncomeByAgentResponse>>builder()
                         .message("Transaction incomes fetched successfully")
-                        .data(response)
+                        .data(allByAgentId)
                         .status(200)
                         .build()
         );
