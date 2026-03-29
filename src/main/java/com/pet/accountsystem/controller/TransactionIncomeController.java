@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -72,6 +73,7 @@ public class TransactionIncomeController {
         );
     }
 
+    @PreAuthorize("hasAnyRole('AGENT')")
     @GetMapping("/agent/{agentId}")
     public ResponseEntity<ApiResponse<List<TransactionIncomeByAgentResponse>>> getAllByAgentId(
             @PathVariable UUID agentId,

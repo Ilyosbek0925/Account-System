@@ -1,5 +1,6 @@
 package com.pet.accountsystem.dto.request;
 
+import com.pet.accountsystem.dto.enums.ClientType;
 import com.pet.accountsystem.entity.enums.Role;
 import lombok.*;
 
@@ -12,13 +13,9 @@ import java.util.UUID;
 public class ClientRequestDTO {
     private String firstName;
     private String lastName;
-    private String status;
     private String groupId;
-    private String clientType;
+    private ClientType clientType;
     private UUID bazaId;
     private String phoneNumber;
-    private String email;
     private boolean isActive;
-
-
 }

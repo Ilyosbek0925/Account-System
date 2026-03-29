@@ -1,12 +1,12 @@
 package com.pet.accountsystem.service.auth;
 
+import com.pet.accountsystem.dto.request.RefreshRequest;
 import com.pet.accountsystem.exception.NotAcceptableException;
 import com.pet.accountsystem.jwt.JwtTokenService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -46,16 +46,11 @@ public class AuthenticationService {
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
     }
 
-    public String authenticateRefreshToken(HttpServletRequest request, HttpServletResponse response)
+    public String authenticateRefreshToken( RefreshRequest refreshRequest)
             throws ServletException, IOException {
 
-        String token = request.getHeader("authorization");
-        if (token == null || !token.startsWith("Bearer ")) {
-            throw new NotAcceptableException("Refresh token is missing or invalid");
-        }
 
-        token = token.substring(7);
-        Jws<Claims> claimsJws = jwtService.extractToken(token);
+        Jws<Claims> claimsJws = jwtService.extractToken(refreshRequest.getRefreshToken());
         Claims claims = claimsJws.getBody();
 
         Date expiration = claims.getExpiration();
@@ -64,11 +59,28 @@ public class AuthenticationService {
         }
 
         try {
-            this.authenticate(claims, request);
+            this.authenticate(claims);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
         return claims.getSubject();
+    }
+
+    private void authenticate(Claims claims) {
+        String username = claims.getSubject();
+
+        List<String> roles = claims.get("roles", List.class);
+        if (roles == null) {
+            throw new IllegalArgumentException("No roles found in JWT claims");
+        }
+        UsernamePasswordAuthenticationToken authenticationToken =
+                new UsernamePasswordAuthenticationToken(
+                        username,
+                        null,
+                        getRoles(roles)
+                );
+        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+
     }
 
 

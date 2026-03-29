@@ -1,6 +1,7 @@
 package com.pet.accountsystem.controller;
 
 import com.pet.accountsystem.dto.LoginDto;
+import com.pet.accountsystem.dto.request.RefreshRequest;
 import com.pet.accountsystem.dto.response.ApiResponse;
 import com.pet.accountsystem.dto.response.LoginResponseDto;
 import com.pet.accountsystem.service.UserService;
@@ -37,9 +38,9 @@ public class AuthController {
 
 
     @PostMapping("/refresh")
-    public ResponseEntity<ApiResponse<LoginResponseDto>> refresh(HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity<ApiResponse<LoginResponseDto>> refresh(@RequestBody RefreshRequest refreshRequest) {
 
-        LoginResponseDto refresh = userService.refresh(request, response);
+        LoginResponseDto refresh = userService.refresh(refreshRequest);
         return ResponseEntity.ok(
                 ApiResponse.<LoginResponseDto>builder()
                         .message("The token is updated")

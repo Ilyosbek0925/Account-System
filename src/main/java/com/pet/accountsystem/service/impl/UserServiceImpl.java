@@ -1,6 +1,7 @@
 package com.pet.accountsystem.service.impl;
 
 import com.pet.accountsystem.dto.LoginDto;
+import com.pet.accountsystem.dto.request.RefreshRequest;
 import com.pet.accountsystem.dto.response.LoginResponseDto;
 import com.pet.accountsystem.entity.UserEntity;
 import com.pet.accountsystem.exception.DataNotFoundException;
@@ -9,11 +10,7 @@ import com.pet.accountsystem.jwt.JwtTokenService;
 import com.pet.accountsystem.repository.UserRepository;
 import com.pet.accountsystem.service.UserService;
 import com.pet.accountsystem.service.auth.AuthenticationService;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -56,9 +53,9 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     }
 
     @Override
-    public LoginResponseDto refresh(HttpServletRequest request, HttpServletResponse response) {
+    public LoginResponseDto refresh(RefreshRequest refreshRequest) {
         try {
-            String username= authenticationService.authenticateRefreshToken(request,response);
+            String username= authenticationService.authenticateRefreshToken(refreshRequest);
             UserDetails userDetails = this.loadUserByUsername(username);
             return LoginResponseDto.builder()
                     .accessToken(jwtTokenService.generateAccessToken(userDetails))
