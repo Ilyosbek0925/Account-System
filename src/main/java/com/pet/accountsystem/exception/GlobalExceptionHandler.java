@@ -18,7 +18,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(value = {DataNotFoundException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ResponseEntity<ApiResponse> dataNotFoundExceptionHandler(
+    public ResponseEntity<ApiResponse<String>> dataNotFoundExceptionHandler(
             DataNotFoundException e) {
 
         log.error("Data not found: {}", e.getMessage(), e);
@@ -26,9 +26,9 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .body(
-                        ApiResponse.builder()
+                        ApiResponse.<String>builder()
                                 .status(404)
-                                .message(e.getMessage())
+                                .message("Data not found")
                                 .build()
                 );
     }
@@ -36,23 +36,24 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(value = {UnauthorizedException.class})
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public ResponseEntity<ApiResponse> forbiddenException(UnauthorizedException e) {
+    public ResponseEntity<ApiResponse<String>> forbiddenException(UnauthorizedException e) {
 
         log.error("Unauthorized access: {}", e.getMessage(), e);
 
         return ResponseEntity
                 .status(HttpStatus.UNAUTHORIZED)
                 .body(
-                        ApiResponse.builder()
+                        ApiResponse.<String>builder()
                                 .status(401)
-                                .message(e.getMessage())
+                                .message("User not authorized")
+                                .data("User is not authorized or token expired")
                                 .build()
                 );
     }
 
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<?> handleValidationException(MethodArgumentNotValidException ex) {
+    public ResponseEntity<ApiResponse<Map<String, String>>> handleValidationException(MethodArgumentNotValidException ex) {
 
         Map<String, String> errors = new HashMap<>();
 
@@ -62,12 +63,17 @@ public class GlobalExceptionHandler {
 
         log.warn("Validation failed: {}", errors);
 
-        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.<Map<String, String>>builder()
+                .data(errors)
+                .message("Validation failed")
+                .status(400)
+                .build());
+
     }
 
 
     @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<Map<String, String>> handleGlobalException(Exception ex) {
+    public ResponseEntity<ApiResponse<Map<String, String>>> handleGlobalException(Exception ex) {
 
         log.error("Unexpected server error", ex);
 
@@ -77,6 +83,10 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(response);
+                .body(ApiResponse.<Map<String, String>>builder()
+                        .status(500)
+                        .message("Unexpected error")
+                        .data(response)
+                        .build());
     }
 }

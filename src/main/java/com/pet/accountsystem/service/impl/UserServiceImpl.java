@@ -6,6 +6,7 @@ import com.pet.accountsystem.dto.response.LoginResponseDto;
 import com.pet.accountsystem.entity.UserEntity;
 import com.pet.accountsystem.exception.DataNotFoundException;
 import com.pet.accountsystem.exception.NotAcceptableException;
+import com.pet.accountsystem.exception.UnauthorizedException;
 import com.pet.accountsystem.jwt.JwtTokenService;
 import com.pet.accountsystem.repository.UserRepository;
 import com.pet.accountsystem.service.UserService;
@@ -47,9 +48,9 @@ public class UserServiceImpl implements UserDetailsService, UserService {
                         .refreshToken(jwtTokenService.generateRefreshToken(user))
                         .build();
             }
-            throw new NotAcceptableException("Your account has blocked");
+            throw new UnauthorizedException("Your account has blocked");
         }
-        throw new NotAcceptableException("Your password is incorrect or you are not signed in");
+        throw new UnauthorizedException("Your password is incorrect or you are not signed in");
     }
 
     @Override
