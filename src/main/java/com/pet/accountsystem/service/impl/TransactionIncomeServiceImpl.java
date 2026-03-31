@@ -15,6 +15,7 @@ import com.pet.accountsystem.repository.AgentRepository;
 import com.pet.accountsystem.repository.ClientRepository;
 import com.pet.accountsystem.repository.TransactionIncomeRepository;
 import com.pet.accountsystem.repository.TransactionTypeRepository;
+import com.pet.accountsystem.service.AgentBalanceService;
 import com.pet.accountsystem.service.CurrencyService;
 import com.pet.accountsystem.service.TransactionIncomeService;
 import com.pet.accountsystem.util.CalculatorUtil;
@@ -42,6 +43,7 @@ public class TransactionIncomeServiceImpl implements TransactionIncomeService {
     private final ClientRepository clientRepository;
     private final TransactionIncomeMapper transactionIncomeMapper;
     private final CurrencyService currencyService;
+    private final AgentBalanceService agentBalanceService;
 
     @Override
     @Transactional
@@ -62,6 +64,8 @@ public class TransactionIncomeServiceImpl implements TransactionIncomeService {
         transactionIncomeRepository.save(income);
         List<UnitTransaction> saved = unitTransactionRepository.saveAll(list);
 
+        agentBalanceService.addMoney(dto, agent);
+
         log.info("Transaction income created id={}", saved.get(0).getId());
         return transactionIncomeMapper.toResponse(saved.get(0).getTransactionIncome(), list);
     }
@@ -72,6 +76,10 @@ public class TransactionIncomeServiceImpl implements TransactionIncomeService {
 
         TransactionIncome income = transactionIncomeRepository.findById(id)
                 .orElseThrow(() -> new DataNotFoundException("TransactionIncome not found: " + id));
+
+
+//        transactionIncomeMapper.toTransactionInfoResponse(income);
+
 
         return null;
     }
@@ -87,10 +95,13 @@ public class TransactionIncomeServiceImpl implements TransactionIncomeService {
         if (endDate != null) {
             toDateTime = endDate.atTime(23, 59, 59);
         }
-
+        System.out.println(type);
 
         if (type == null) {
+            System.out.println("come to type");
             Page<TransactionAllTypeProjection> allTypeProjections = transactionIncomeRepository.findTransactionsByAllTypes(agentId, fromDateTime, toDateTime, pageable);
+            allTypeProjections.forEach(projection -> System.out.println(projection.getTypes()));
+            System.out.println("last");
             return allTypeProjections.stream().map(transactionIncomeMapper::toTransactionAgentResponse).toList();
         }
 

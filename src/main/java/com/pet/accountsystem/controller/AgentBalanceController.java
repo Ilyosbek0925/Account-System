@@ -3,6 +3,8 @@ package com.pet.accountsystem.controller;
 import com.pet.accountsystem.dto.request.AgentBalanceRequestDTO;
 import com.pet.accountsystem.dto.response.AgentBalanceResponseDTO;
 import com.pet.accountsystem.dto.response.ApiResponse;
+import com.pet.accountsystem.dto.response.TransactionTypeSummaryResponse;
+import com.pet.accountsystem.projection.TransactionTypeSummary;
 import com.pet.accountsystem.service.AgentBalanceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -32,15 +34,15 @@ public class AgentBalanceController {
         );
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<AgentBalanceResponseDTO>> getById(@PathVariable UUID id) {
+    @GetMapping("/{agentId}")
+    public ResponseEntity<ApiResponse<AgentBalanceResponseDTO>> getById(@PathVariable UUID agentId) {
+AgentBalanceResponseDTO agentBalanceResponse= agentBalanceService.getAgentBalanceByAgentId(agentId);
 
-        AgentBalanceResponseDTO response = agentBalanceService.getById(id);
 
         return ResponseEntity.ok(
                 ApiResponse.<AgentBalanceResponseDTO>builder()
                         .message("Agent balance fetched successfully")
-                        .data(response)
+                        .data(agentBalanceResponse)
                         .status(200)
                         .build()
         );

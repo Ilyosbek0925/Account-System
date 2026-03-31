@@ -3,8 +3,10 @@ package com.pet.accountsystem.repository;
 import com.pet.accountsystem.dto.TotalTransactionDTO;
 import com.pet.accountsystem.entity.Agent;
 import com.pet.accountsystem.entity.TransactionIncome;
+import com.pet.accountsystem.entity.UnitTransaction;
 import com.pet.accountsystem.projection.TransactionAllTypeProjection;
 import com.pet.accountsystem.projection.TransactionReportProjection;
+import com.pet.accountsystem.projection.TransactionTypeSummary;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -44,6 +46,7 @@ public interface TransactionIncomeRepository extends JpaRepository<TransactionIn
 
         @Query(value = """
             select
+                ti.id as Id,
                 c.first_name as firstName,
                 c.last_name as lastName,
                 ti.created_at as transactionDate,
@@ -81,6 +84,7 @@ public interface TransactionIncomeRepository extends JpaRepository<TransactionIn
 
     @Query(value = """
         select
+            c.id as id,
             c.first_name as firstName,
             c.last_name as lastName,
             ti.created_at as transactionDate,
@@ -115,4 +119,20 @@ public interface TransactionIncomeRepository extends JpaRepository<TransactionIn
             @Param("toDateTime") LocalDateTime toDateTime,
             Pageable pageable
     );
+
+
+
+    @Query(value = """
+        select
+            u.transaction_type as transactionType,
+            sum(u.amount) as totalAmount,
+            sum(u.usd_amount) as totalUsdAmount
+        from unit_transactions u
+        join transaction_income t on t.id = u.transaction_income_id
+        where t.agent_id = :agentId
+        group by u.transaction_type
+        order by u.transaction_type
+        """, nativeQuery = true)
+    List<TransactionTypeSummary> sumTransactionsByTypes(@Param("agentId") UUID agentId);
+
 }

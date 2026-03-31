@@ -37,6 +37,7 @@ public class TransactionIncomeMapper {
 
     public TransactionIncomeByAgentResponse toTransactionAgentResponse(TransactionReportProjection projection){
         return TransactionIncomeByAgentResponse.builder()
+                .transactionId(projection.getId())
                 .transactionDate(projection.getTransactionDate())
                 .clientFirstName(projection.getFirstName())
                 .clientLastName(projection.getLastName())
@@ -82,6 +83,7 @@ public class TransactionIncomeMapper {
 
     public TransactionIncomeByAgentResponse toTransactionAgentResponse(TransactionAllTypeProjection projection) {
         return TransactionIncomeByAgentResponse.builder()
+                .transactionId(projection.getId())
                 .transactionDate(projection.getTransactionDate())
                 .clientFirstName(projection.getFirstName())
                 .clientLastName(projection.getLastName())

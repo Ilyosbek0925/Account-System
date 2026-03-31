@@ -8,6 +8,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -16,6 +17,7 @@ import java.util.List;
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class TransactionIncomeByAgentResponse {
+    private UUID transactionId;
     private String clientFirstName;
     private String clientLastName;
     private LocalDateTime transactionDate;

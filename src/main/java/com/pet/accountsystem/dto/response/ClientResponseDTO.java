@@ -1,5 +1,6 @@
 package com.pet.accountsystem.dto.response;
 
+import com.pet.accountsystem.dto.enums.ClientType;
 import lombok.*;
 
 import java.util.UUID;
@@ -10,13 +11,11 @@ import java.util.UUID;
 @Builder
 public class ClientResponseDTO {
     private UUID id;
-    private String status;
-    private String groupId;
     private String clientType;
+    private String groupId;
     private UUID bazaId;
     private String firstName;
     private String lastName;
     private String phoneNumber;
-    private String email;
-    private boolean isActive;
+    private Boolean isActive;
 }

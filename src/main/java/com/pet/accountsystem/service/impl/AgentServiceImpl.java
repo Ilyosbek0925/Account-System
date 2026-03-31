@@ -4,10 +4,13 @@ import com.pet.accountsystem.dto.request.AgentRequestDTO;
 import com.pet.accountsystem.dto.response.AgentResponseDTO;
 import com.pet.accountsystem.entity.Agent;
 import com.pet.accountsystem.entity.Base;
+import com.pet.accountsystem.entity.enums.Role;
 import com.pet.accountsystem.exception.DataNotFoundException;
 import com.pet.accountsystem.mapper.AgentMapper;
+import com.pet.accountsystem.projection.TransactionTypeSummary;
 import com.pet.accountsystem.repository.AgentRepository;
 import com.pet.accountsystem.repository.BazaRepository;
+import com.pet.accountsystem.repository.TransactionIncomeRepository;
 import com.pet.accountsystem.service.AgentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +27,7 @@ public class AgentServiceImpl implements AgentService {
     private final AgentRepository agentRepository;
     private final BazaRepository bazaRepository;
     private final AgentMapper agentMapper;
+    private final TransactionIncomeRepository incomeRepository;
 
     @Override
     public AgentResponseDTO create(AgentRequestDTO requestDTO) {
@@ -33,6 +37,9 @@ public class AgentServiceImpl implements AgentService {
                 .orElseThrow(() -> new DataNotFoundException("Baza not found: " + requestDTO.getBazaId()));
 
         Agent agent = agentMapper.toEntity(requestDTO, base);
+        agent.setIsActive(true);
+        agent.setRole(Role.AGENT);
+
         Agent saved = agentRepository.save(agent);
 
         log.info("Agent created with id={}", saved.getId());
@@ -45,6 +52,9 @@ public class AgentServiceImpl implements AgentService {
 
         Agent agent = agentRepository.findById(id)
                 .orElseThrow(() -> new DataNotFoundException("Agent not found: " + id));
+
+
+        List<TransactionTypeSummary> transactionTypeSummaries = incomeRepository.sumTransactionsByTypes(id);
 
         return agentMapper.toResponse(agent);
     }

@@ -2,6 +2,8 @@ package com.pet.accountsystem.dto.response;
 
 import com.pet.accountsystem.entity.enums.Role;
 import lombok.*;
+
+import java.util.List;
 import java.util.UUID;
 
 @AllArgsConstructor
@@ -17,7 +19,7 @@ public class AgentResponseDTO {
     private String firstName;
     private String lastName;
     private String phoneNumber;
-
+    private List<UnitTransactionResponse> unitTransactionResponses;
     private String email;
 
     private Role role;

@@ -4,10 +4,14 @@ import com.pet.accountsystem.dto.request.AgentRequestDTO;
 import com.pet.accountsystem.dto.response.AgentResponseDTO;
 import com.pet.accountsystem.entity.Agent;
 import com.pet.accountsystem.entity.Base;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class AgentMapper {
+    private final PasswordEncoder passwordEncoder;
 
     public Agent toEntity(AgentRequestDTO dto, Base base) {
         if (dto == null) return null;
@@ -17,9 +21,7 @@ public class AgentMapper {
         agent.setLastName(dto.getLastName());
         agent.setPhoneNumber(dto.getPhoneNumber());
         agent.setEmail(dto.getEmail());
-        agent.setRole(dto.getRole());
-        agent.setIsActive(dto.getIsActive());
-        agent.setPassword(dto.getPassword());
+        agent.setPassword(passwordEncoder.encode(dto.getPassword()));
         agent.setBase(base);
         return agent;
     }
@@ -49,8 +51,6 @@ public class AgentMapper {
         agent.setLastName(dto.getLastName());
         agent.setPhoneNumber(dto.getPhoneNumber());
         agent.setEmail(dto.getEmail());
-        agent.setRole(dto.getRole());
-        agent.setIsActive(dto.getIsActive());
         agent.setPassword(dto.getPassword());
         agent.setBase(base);
     }

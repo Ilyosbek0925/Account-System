@@ -9,10 +9,8 @@ import java.util.UUID;
 @Setter
 @Builder
 public class AgentBalanceResponseDTO {
-    private UUID id;
     private String usdAmount;
     private String uzsAmount;
     private String clickAmount;
     private String bankAmount;
-    private UUID agentId;
 }

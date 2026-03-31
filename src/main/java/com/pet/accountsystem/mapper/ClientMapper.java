@@ -18,6 +18,7 @@ public class ClientMapper {
         client.setGroupId(dto.getGroupId());
         client.setClientType(dto.getClientType().toString());
         client.setBase(base);
+        client.setIsActive(dto.getIsActive());
         return client;
     }
 
@@ -27,9 +28,7 @@ public class ClientMapper {
         dto.setFirstName(client.getFirstName());
         dto.setLastName(client.getLastName());
         dto.setId(client.getId());
-        dto.setStatus(client.getStatus());
         dto.setPhoneNumber(client.getPhoneNumber());
-
         dto.setGroupId(client.getGroupId());
         dto.setClientType(client.getClientType());
         dto.setBazaId(
@@ -37,6 +36,7 @@ public class ClientMapper {
                         ? client.getBase().getId()
                         : null
         );
+        dto.setIsActive(client.getIsActive());
         return dto;
     }
 

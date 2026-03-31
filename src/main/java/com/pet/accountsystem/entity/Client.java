@@ -16,6 +16,8 @@ public class Client extends BaseEntity {
 
     private String groupId;
 
+    private Boolean isActive;
+
     private String clientType;
 
     @Column(unique = true)

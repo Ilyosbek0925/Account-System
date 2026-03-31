@@ -17,5 +17,5 @@ public class ClientRequestDTO {
     private ClientType clientType;
     private UUID bazaId;
     private String phoneNumber;
-    private boolean isActive;
+    private Boolean isActive;
 }

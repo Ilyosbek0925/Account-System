@@ -56,15 +56,15 @@ public class CurrencyServiceImpl implements CurrencyService {
                     }
                 }
 
-                case TERMINAL -> {
-                    if (unitTransaction.getCurrency().equals(Currency.USD)) {
-                        unitTransaction.setUsdAmount(amount);
-                    } else {
-                        unitTransaction.setUsdAmount(
-                                amount.divide(BigDecimal.valueOf(dailyCurrency.getUzTerminal()), 6, RoundingMode.HALF_UP)
-                        );
-                    }
-                }
+//                case TERMINAL -> {
+//                    if (unitTransaction.getCurrency().equals(Currency.USD)) {
+//                        unitTransaction.setUsdAmount(amount);
+//                    } else {
+//                        unitTransaction.setUsdAmount(
+//                                amount.divide(BigDecimal.valueOf(dailyCurrency.getUzTerminal()), 6, RoundingMode.HALF_UP)
+//                        );
+//                    }
+//                }
             }
         });
 

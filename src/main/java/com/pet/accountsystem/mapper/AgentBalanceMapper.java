@@ -26,16 +26,10 @@ public class AgentBalanceMapper {
         if (balance == null) return null;
 
         return AgentBalanceResponseDTO.builder()
-                .id(balance.getId())
                 .usdAmount(FormatUtil.toScale(balance.getUsdAmount()))
                 .uzsAmount(FormatUtil.toScale(balance.getUzsAmount()))
                 .clickAmount(FormatUtil.toScale(balance.getClickAmount()))
                 .bankAmount(FormatUtil.toScale(balance.getBankAmount()))
-                .agentId(
-                        balance.getAgent() != null
-                                ? balance.getAgent().getId()
-                                : null
-                )
                 .build();
     }
 
