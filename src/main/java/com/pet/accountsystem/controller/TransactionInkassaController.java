@@ -18,8 +18,8 @@ public class TransactionInkassaController {
 
     private final TransactionInkassaService transactionInkassaService;
 
-    @PostMapping
-    public ResponseEntity<ApiResponse<TransactionInkassaResponseDTO>> create(
+    @PostMapping()
+    public ResponseEntity<ApiResponse<TransactionInkassaResponseDTO>> create(@PathVariable UUID agentId,
             @RequestBody TransactionInkassaRequestDTO dto) {
 
         TransactionInkassaResponseDTO response = transactionInkassaService.create(dto);
@@ -46,6 +46,12 @@ public class TransactionInkassaController {
                         .build()
         );
     }
+
+
+
+
+
+
 
     @GetMapping
     public ResponseEntity<ApiResponse<List<TransactionInkassaResponseDTO>>> getAll() {

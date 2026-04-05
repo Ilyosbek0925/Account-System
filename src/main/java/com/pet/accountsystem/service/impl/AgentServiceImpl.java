@@ -14,6 +14,7 @@ import com.pet.accountsystem.repository.TransactionIncomeRepository;
 import com.pet.accountsystem.service.AgentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,6 +29,7 @@ public class AgentServiceImpl implements AgentService {
     private final BazaRepository bazaRepository;
     private final AgentMapper agentMapper;
     private final TransactionIncomeRepository incomeRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public AgentResponseDTO create(AgentRequestDTO requestDTO) {
@@ -80,6 +82,7 @@ public class AgentServiceImpl implements AgentService {
                 .orElseThrow(() -> new DataNotFoundException("Baza not found: " + requestDTO.getBazaId()));
 
         agentMapper.updateEntity(requestDTO, agent, base);
+        agent.setPassword(passwordEncoder.encode(requestDTO.getPassword()));
         Agent saved = agentRepository.save(agent);
 
         log.info("Agent updated id={}", saved.getId());

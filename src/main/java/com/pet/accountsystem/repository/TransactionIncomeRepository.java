@@ -135,4 +135,6 @@ public interface TransactionIncomeRepository extends JpaRepository<TransactionIn
         """, nativeQuery = true)
     List<TransactionTypeSummary> sumTransactionsByTypes(@Param("agentId") UUID agentId);
 
+    @Query("SELECT u FROM UnitTransaction u WHERE u.transactionIncome.id = :transactionIncomeId")
+    List<UnitTransaction> findByTransactionIncomeId(@Param("transactionIncomeId") UUID transactionIncomeId);
 }

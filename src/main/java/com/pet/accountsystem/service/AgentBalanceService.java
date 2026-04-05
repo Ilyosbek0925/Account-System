@@ -2,9 +2,11 @@ package com.pet.accountsystem.service;
 
 import com.pet.accountsystem.dto.request.AgentBalanceRequestDTO;
 import com.pet.accountsystem.dto.request.TransactionIncomeRequestDTO;
+import com.pet.accountsystem.dto.request.TransactionInkassaRequestDTO;
 import com.pet.accountsystem.dto.response.AgentBalanceResponseDTO;
 import com.pet.accountsystem.dto.response.TransactionTypeSummaryResponse;
 import com.pet.accountsystem.entity.Agent;
+import com.pet.accountsystem.entity.AgentBalance;
 
 import java.util.List;
 import java.util.UUID;
@@ -22,4 +24,6 @@ public interface AgentBalanceService {
     void addMoney(TransactionIncomeRequestDTO dto , Agent agent);
 
     AgentBalanceResponseDTO getAgentBalanceByAgentId(UUID agentId);
+
+    void minusMoney(TransactionInkassaRequestDTO dto, AgentBalance agentBalance);
 }

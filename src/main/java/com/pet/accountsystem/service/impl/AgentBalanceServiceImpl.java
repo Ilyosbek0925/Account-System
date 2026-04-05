@@ -2,6 +2,7 @@ package com.pet.accountsystem.service.impl;
 
 import com.pet.accountsystem.dto.request.AgentBalanceRequestDTO;
 import com.pet.accountsystem.dto.request.TransactionIncomeRequestDTO;
+import com.pet.accountsystem.dto.request.TransactionInkassaRequestDTO;
 import com.pet.accountsystem.dto.request.TransactionTypeRequest;
 import com.pet.accountsystem.dto.response.AgentBalanceResponseDTO;
 import com.pet.accountsystem.entity.Agent;
@@ -147,5 +148,13 @@ public class AgentBalanceServiceImpl implements AgentBalanceService {
         Agent agent = agentRepository.findById(agentId).orElseThrow(() -> new DataNotFoundException("agent is not found"));
         Optional<AgentBalance> byAgent = agentBalanceRepository.findByAgent(agent);
         return byAgent.map(agentBalanceMapper::toResponse).orElse(null);
+    }
+
+    @Override
+    public void minusMoney(TransactionInkassaRequestDTO dto, AgentBalance agentBalance) {
+        agentBalance.setUsdAmount(agentBalance.getUsdAmount().subtract(dto.getUsdAmount()));
+        agentBalance.setUzsAmount(agentBalance.getUzsAmount().subtract(dto.getUzsAmount()));
+        agentBalance.setClickAmount(agentBalance.getClickAmount().subtract(dto.getClickAmount()));
+        agentBalanceRepository.save(agentBalance);
     }
 }

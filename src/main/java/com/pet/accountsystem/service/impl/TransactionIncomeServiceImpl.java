@@ -74,10 +74,9 @@ public class TransactionIncomeServiceImpl implements TransactionIncomeService {
     public TransactionIncomeResponse getById(UUID id) {
         log.info("Fetching transaction income by id={}", id);
 
-        TransactionIncome income = transactionIncomeRepository.findById(id)
-                .orElseThrow(() -> new DataNotFoundException("TransactionIncome not found: " + id));
+        List<UnitTransaction> income = transactionIncomeRepository.findByTransactionIncomeId(id);
 
-
+//        transactionIncomeMapper
 //        transactionIncomeMapper.toTransactionInfoResponse(income);
 
 

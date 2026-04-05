@@ -2,20 +2,22 @@ package com.pet.accountsystem.service.impl;
 
 import com.pet.accountsystem.dto.request.TransactionInkassaRequestDTO;
 import com.pet.accountsystem.dto.response.TransactionInkassaResponseDTO;
-import com.pet.accountsystem.entity.Admin;
-import com.pet.accountsystem.entity.Agent;
-import com.pet.accountsystem.entity.TransactionInkassa;
+import com.pet.accountsystem.entity.*;
 import com.pet.accountsystem.exception.DataNotFoundException;
+import com.pet.accountsystem.exception.NotAcceptableException;
 import com.pet.accountsystem.mapper.TransactionInkassaMapper;
-import com.pet.accountsystem.repository.AdminRepository;
-import com.pet.accountsystem.repository.AgentRepository;
-import com.pet.accountsystem.repository.TransactionInkassaRepository;
+import com.pet.accountsystem.repository.*;
+import com.pet.accountsystem.service.AdminBalanceService;
+import com.pet.accountsystem.service.AgentBalanceService;
 import com.pet.accountsystem.service.TransactionInkassaService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -27,22 +29,43 @@ public class TransactionInkassaServiceImpl implements TransactionInkassaService 
     private final AdminRepository adminRepository;
     private final AgentRepository agentRepository;
     private final TransactionInkassaMapper transactionInkassaMapper;
+    private final AgentBalanceRepository agentBalanceRepository;
+    private final AdminBalanceRepository adminBalanceRepository;
+    private final AgentBalanceService agentBalanceService;
+    private final AdminBalanceService adminBalanceService;
+
 
     @Override
+    @Transactional
     public TransactionInkassaResponseDTO create(TransactionInkassaRequestDTO dto) {
         log.info("Creating transaction inkassa adminId={}, agentId={}", dto.getAdminId(), dto.getAgentId());
+        AdminBalance adminBalance = null;
+        Agent agent = agentRepository.findById(dto.getAgentId())
+                .orElseThrow(() -> new DataNotFoundException("Agent not found: " + dto.getAgentId()));
+
 
         Admin admin = adminRepository.findById(dto.getAdminId())
                 .orElseThrow(() -> new DataNotFoundException("Admin not found: " + dto.getAdminId()));
 
-        Agent agent = agentRepository.findById(dto.getAgentId())
-                .orElseThrow(() -> new DataNotFoundException("Agent not found: " + dto.getAgentId()));
+        AgentBalance agentBalance = agentBalanceRepository.findByAgent(agent).orElseThrow(() -> new DataNotFoundException("agent balance is not exist"));
+        Optional<AdminBalance> optionalAdminBalance = adminBalanceRepository.findByAdmin(admin);
+        validateAgentBalance(agentBalance, dto);
+        adminBalance = optionalAdminBalance.orElseGet(() -> new AdminBalance(new BigDecimal("0"), new BigDecimal("0"), new BigDecimal("0"), new BigDecimal("0"), admin));
+        agentBalanceService.minusMoney(dto, agentBalance);
+        adminBalanceService.addMoney(dto, adminBalance);
+
 
         TransactionInkassa inkassa = transactionInkassaMapper.toEntity(dto, admin, agent);
         TransactionInkassa saved = transactionInkassaRepository.save(inkassa);
 
         log.info("Transaction inkassa created id={}", saved.getId());
         return transactionInkassaMapper.toResponse(saved);
+    }
+
+    private void validateAgentBalance(AgentBalance agentBalance, TransactionInkassaRequestDTO dto) {
+        if (agentBalance.getUsdAmount().compareTo(dto.getUsdAmount()) < 0 || agentBalance.getUzsAmount().compareTo(dto.getUzsAmount()) < 0 || agentBalance.getClickAmount().compareTo(dto.getClickAmount()) < 0) {
+            throw new NotAcceptableException("agent balance is less then required");
+        }
     }
 
     @Override

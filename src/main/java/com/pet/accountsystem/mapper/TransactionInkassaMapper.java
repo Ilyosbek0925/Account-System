@@ -5,6 +5,7 @@ import com.pet.accountsystem.dto.response.TransactionInkassaResponseDTO;
 import com.pet.accountsystem.entity.Admin;
 import com.pet.accountsystem.entity.Agent;
 import com.pet.accountsystem.entity.TransactionInkassa;
+import com.pet.accountsystem.util.FormatUtil;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -41,10 +42,10 @@ public class TransactionInkassaMapper {
                         ? inkassa.getAgent().getId()
                         : null
         );
-//        dto.setUsdAmount(inkassa.getUsdAmount());
-//        dto.setUzsAmount(inkassa.getUzsAmount());
-//        dto.setClickAmount(inkassa.getClickAmount());
-//        dto.setBankAmount(inkassa.getBankAmount());
+        dto.setUsdAmount(FormatUtil.toScale(inkassa.getUsdAmount()));
+        dto.setUzsAmount(FormatUtil.toScale(inkassa.getUzsAmount()));
+        dto.setClickAmount(FormatUtil.toScale(inkassa.getClickAmount()));
+        dto.setBankAmount(FormatUtil.toScale(inkassa.getBankAmount()));
         dto.setDescription(inkassa.getDescription());
         return dto;
     }

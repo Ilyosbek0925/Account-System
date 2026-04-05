@@ -32,10 +32,10 @@ public class AdminBalanceController {
         );
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<AdminBalanceResponseDTO>> getById(@PathVariable UUID id) {
+    @GetMapping("/{adminId}")
+    public ResponseEntity<ApiResponse<AdminBalanceResponseDTO>> getById(@PathVariable UUID adminId) {
 
-        AdminBalanceResponseDTO response = adminBalanceService.getById(id);
+        AdminBalanceResponseDTO response = adminBalanceService.getById(adminId);
 
         return ResponseEntity.ok(
                 ApiResponse.<AdminBalanceResponseDTO>builder()

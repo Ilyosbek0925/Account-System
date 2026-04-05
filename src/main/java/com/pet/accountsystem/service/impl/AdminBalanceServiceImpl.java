@@ -1,6 +1,7 @@
 package com.pet.accountsystem.service.impl;
 
 import com.pet.accountsystem.dto.request.AdminBalanceRequestDTO;
+import com.pet.accountsystem.dto.request.TransactionInkassaRequestDTO;
 import com.pet.accountsystem.dto.response.AdminBalanceResponseDTO;
 import com.pet.accountsystem.entity.Admin;
 import com.pet.accountsystem.entity.AdminBalance;
@@ -42,8 +43,10 @@ public class AdminBalanceServiceImpl implements AdminBalanceService {
     @Override
     public AdminBalanceResponseDTO getById(UUID id) {
         log.info("Fetching admin balance by id={}", id);
+        Admin admin = adminRepository.findById(id).orElseThrow(() -> new DataNotFoundException("admin is not found"));
 
-        AdminBalance balance = adminBalanceRepository.findById(id)
+
+        AdminBalance balance = adminBalanceRepository.findByAdmin(admin)
                 .orElseThrow(() -> new DataNotFoundException("AdminBalance not found: " + id));
 
         return adminBalanceMapper.toResponse(balance);
@@ -86,5 +89,13 @@ public class AdminBalanceServiceImpl implements AdminBalanceService {
 
         adminBalanceRepository.deleteById(id);
         log.info("Admin balance deleted id={}", id);
+    }
+
+    @Override
+    public void addMoney(TransactionInkassaRequestDTO dto, AdminBalance adminBalance) {
+        adminBalance.setUsdAmount(adminBalance.getUsdAmount().add(dto.getUsdAmount()));
+        adminBalance.setClickAmount(adminBalance.getClickAmount().add(dto.getClickAmount()));
+        adminBalance.setUzsAmount(adminBalance.getUzsAmount().add(dto.getUzsAmount()));
+        adminBalanceRepository.save(adminBalance);
     }
 }

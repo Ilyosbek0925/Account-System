@@ -24,7 +24,6 @@ public class UnitTransaction extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private TransactionType transactionType;
 
-
     @ManyToOne(fetch = FetchType.EAGER)
     private TransactionIncome transactionIncome;
 
