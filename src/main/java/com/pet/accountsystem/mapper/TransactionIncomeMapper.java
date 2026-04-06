@@ -1,7 +1,7 @@
 package com.pet.accountsystem.mapper;
 
 import com.pet.accountsystem.dto.request.TransactionIncomeRequestDTO;
-import com.pet.accountsystem.dto.response.TransactionIncomeByAgentResponse;
+import com.pet.accountsystem.dto.response.TransactionIncomeByRoleResponse;
 import com.pet.accountsystem.dto.response.TransactionIncomeResponse;
 import com.pet.accountsystem.dto.response.TransactionInfoResponse;
 import com.pet.accountsystem.dto.response.UnitTransactionResponse;
@@ -36,8 +36,8 @@ public class TransactionIncomeMapper {
     }
 
 
-    public TransactionIncomeByAgentResponse toTransactionAgentResponse(TransactionReportProjection projection) {
-        return TransactionIncomeByAgentResponse.builder()
+    public TransactionIncomeByRoleResponse toTransactionAgentResponse(TransactionReportProjection projection) {
+        return TransactionIncomeByRoleResponse.builder()
                 .transactionId(projection.getId())
                 .transactionDate(projection.getTransactionDate())
                 .clientFirstName(projection.getFirstName())
@@ -82,8 +82,8 @@ public class TransactionIncomeMapper {
         income.setDescription(dto.getDescription());
     }
 
-    public TransactionIncomeByAgentResponse toTransactionAgentResponse(TransactionAllTypeProjection projection) {
-        return TransactionIncomeByAgentResponse.builder()
+    public TransactionIncomeByRoleResponse toTransactionAgentResponse(TransactionAllTypeProjection projection) {
+        return TransactionIncomeByRoleResponse.builder()
                 .transactionId(projection.getId())
                 .transactionDate(projection.getTransactionDate())
                 .clientFirstName(projection.getFirstName())

@@ -19,7 +19,7 @@ public class TransactionInkassaController {
     private final TransactionInkassaService transactionInkassaService;
 
     @PostMapping()
-    public ResponseEntity<ApiResponse<TransactionInkassaResponseDTO>> create(@PathVariable UUID agentId,
+    public ResponseEntity<ApiResponse<TransactionInkassaResponseDTO>> create(
             @RequestBody TransactionInkassaRequestDTO dto) {
 
         TransactionInkassaResponseDTO response = transactionInkassaService.create(dto);

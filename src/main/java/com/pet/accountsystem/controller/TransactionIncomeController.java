@@ -3,7 +3,7 @@ package com.pet.accountsystem.controller;
 import com.pet.accountsystem.dto.TotalTransactionDTO;
 import com.pet.accountsystem.dto.request.TransactionIncomeRequestDTO;
 import com.pet.accountsystem.dto.response.ApiResponse;
-import com.pet.accountsystem.dto.response.TransactionIncomeByAgentResponse;
+import com.pet.accountsystem.dto.response.TransactionIncomeByRoleResponse;
 import com.pet.accountsystem.dto.response.TransactionIncomeResponse;
 import com.pet.accountsystem.entity.enums.TransactionType;
 import com.pet.accountsystem.service.TransactionIncomeService;
@@ -13,7 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -73,9 +72,9 @@ public class TransactionIncomeController {
         );
     }
 
-    @PreAuthorize("hasAnyRole('AGENT')")
+
     @GetMapping("/agent/{agentId}")
-    public ResponseEntity<ApiResponse<List<TransactionIncomeByAgentResponse>>> getAllByAgentId(
+    public ResponseEntity<ApiResponse<List<TransactionIncomeByRoleResponse>>> getAllByAgentId(
             @PathVariable UUID agentId,
             @RequestParam(required = false) TransactionType type,
             @RequestParam(required = false) LocalDate fromDate,
@@ -86,16 +85,54 @@ public class TransactionIncomeController {
         Pageable pageable = PageRequest.of(page, size);
 
 
-        List<TransactionIncomeByAgentResponse> allByAgentId = transactionIncomeService.getAllByAgentId(agentId, fromDate, toDate, type, pageable);
+        List<TransactionIncomeByRoleResponse> allByAgentId = transactionIncomeService.getAllByAgentId(agentId, fromDate, toDate, type, pageable);
 
         return ResponseEntity.ok(
-                ApiResponse.<List<TransactionIncomeByAgentResponse>>builder()
+                ApiResponse.<List<TransactionIncomeByRoleResponse>>builder()
                         .message("Transaction incomes fetched successfully")
                         .data(allByAgentId)
                         .status(200)
                         .build()
         );
     }
+
+
+
+
+
+    @GetMapping("/client/{clientId}")
+    public ResponseEntity<ApiResponse<List<TransactionIncomeByRoleResponse>>> getAllByClientId(
+            @PathVariable UUID clientId,
+            @RequestParam(required = false) TransactionType type,
+            @RequestParam(required = false) LocalDate fromDate,
+            @RequestParam(required = false) LocalDate toDate,
+            @RequestParam(required = false, defaultValue = "10") int size,
+            @RequestParam(required = false, defaultValue = "0") int page
+    ) {
+        Pageable pageable = PageRequest.of(page, size);
+
+
+        List<TransactionIncomeByRoleResponse> allByAgentId = transactionIncomeService.getAllByClientId(clientId, fromDate, toDate, type, pageable);
+
+        return ResponseEntity.ok(
+                ApiResponse.<List<TransactionIncomeByRoleResponse>>builder()
+                        .message("Transaction incomes fetched successfully")
+                        .data(allByAgentId)
+                        .status(200)
+                        .build()
+        );
+    }
+
+
+
+
+
+
+
+
+
+
+
 
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<TransactionIncomeResponse>> update(

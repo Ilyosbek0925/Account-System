@@ -2,7 +2,7 @@ package com.pet.accountsystem.service.impl;
 
 import com.pet.accountsystem.dto.TotalTransactionDTO;
 import com.pet.accountsystem.dto.request.TransactionIncomeRequestDTO;
-import com.pet.accountsystem.dto.response.TransactionIncomeByAgentResponse;
+import com.pet.accountsystem.dto.response.TransactionIncomeByRoleResponse;
 import com.pet.accountsystem.dto.response.TransactionIncomeResponse;
 import com.pet.accountsystem.entity.*;
 import com.pet.accountsystem.entity.enums.TransactionType;
@@ -33,7 +33,6 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-
 @Slf4j
 public class TransactionIncomeServiceImpl implements TransactionIncomeService {
     private final TransactionTypeRepository unitTransactionRepository;
@@ -44,6 +43,7 @@ public class TransactionIncomeServiceImpl implements TransactionIncomeService {
     private final TransactionIncomeMapper transactionIncomeMapper;
     private final CurrencyService currencyService;
     private final AgentBalanceService agentBalanceService;
+    private final ClientBalanceService clientBalanceService;
 
     @Override
     @Transactional
@@ -62,9 +62,14 @@ public class TransactionIncomeServiceImpl implements TransactionIncomeService {
         currencyService.setUsdAmountToUnitTransactions(list);
         income.setTotal(CalculatorUtil.setTransactionIncomeTotalAmount(list));
         transactionIncomeRepository.save(income);
+
+
+
         List<UnitTransaction> saved = unitTransactionRepository.saveAll(list);
 
         agentBalanceService.addMoney(dto, agent);
+clientBalanceService.addMoney(dto,client);
+
 
         log.info("Transaction income created id={}", saved.get(0).getId());
         return transactionIncomeMapper.toResponse(saved.get(0).getTransactionIncome(), list);
@@ -85,7 +90,7 @@ public class TransactionIncomeServiceImpl implements TransactionIncomeService {
 
 
     @Override
-    public List<TransactionIncomeByAgentResponse> getAllByAgentId(UUID agentId, LocalDate startDate, LocalDate endDate, TransactionType type, Pageable pageable) {
+    public List<TransactionIncomeByRoleResponse> getAllByAgentId(UUID agentId, LocalDate startDate, LocalDate endDate, TransactionType type, Pageable pageable) {
         LocalDateTime fromDateTime = null;
         LocalDateTime toDateTime = null;
         if (startDate != null) {
@@ -114,6 +119,30 @@ public class TransactionIncomeServiceImpl implements TransactionIncomeService {
         return transactionIncomeRepository.getTotalTransaction(agentId);
     }
 
+    @Override
+    public List<TransactionIncomeByRoleResponse> getAllByClientId(UUID clientId, LocalDate startDate, LocalDate endDate, TransactionType type, Pageable pageable) {
+        LocalDateTime fromDateTime = null;
+        LocalDateTime toDateTime = null;
+        if (startDate != null) {
+            fromDateTime = startDate.atStartOfDay();
+        }
+        if (endDate != null) {
+            toDateTime = endDate.atTime(23, 59, 59);
+        }
+        System.out.println(type);
+
+        if (type == null) {
+            System.out.println("come to type");
+            Page<TransactionAllTypeProjection> allTypeProjections = transactionIncomeRepository.findTransactionsByAllTypes(clientId, fromDateTime, toDateTime, pageable);
+            allTypeProjections.forEach(projection -> System.out.println(projection.getTypes()));
+            System.out.println("last");
+            return allTypeProjections.stream().map(transactionIncomeMapper::toTransactionAgentResponse).toList();
+        }
+
+
+        Page<TransactionReportProjection> transactions = transactionIncomeRepository.findTransactions(clientId, type.toString(), fromDateTime, toDateTime, pageable);
+        return transactions.stream().map(transactionIncomeMapper::toTransactionAgentResponse).toList();
+    }
     @Override
     public TransactionIncomeResponse update(UUID id, TransactionIncomeRequestDTO dto) {
         log.info("Updating transaction income id={}", id);

@@ -1,13 +1,10 @@
 package com.pet.accountsystem.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.pet.accountsystem.entity.enums.TransactionType;
 import lombok.*;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -16,7 +13,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class TransactionIncomeByAgentResponse {
+public class TransactionIncomeByRoleResponse {
     private UUID transactionId;
     private String clientFirstName;
     private String clientLastName;

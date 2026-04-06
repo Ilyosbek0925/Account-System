@@ -96,7 +96,7 @@ public interface TransactionIncomeRepository extends JpaRepository<TransactionIn
         where ti.agent_id = :agentId
           and (cast(:fromDateTime as timestamp) is null or ti.created_at >= cast(:fromDateTime as timestamp))
           and (cast(:toDateTime as timestamp) is null or ti.created_at < cast(:toDateTime as timestamp))
-        group by ti.id, c.first_name, c.last_name, ti.created_at, ti.total
+        group by c.id, c.first_name, c.last_name, ti.id, ti.created_at, ti.total
         order by ti.created_at desc
         """,
             countQuery = """
@@ -109,7 +109,7 @@ public interface TransactionIncomeRepository extends JpaRepository<TransactionIn
             where ti.agent_id = :agentId
               and (cast(:fromDateTime as timestamp) is null or ti.created_at >= cast(:fromDateTime as timestamp))
               and (cast(:toDateTime as timestamp) is null or ti.created_at < cast(:toDateTime as timestamp))
-            group by ti.id
+            group by c.id, c.first_name, c.last_name, ti.id, ti.created_at, ti.total
         ) t
         """,
             nativeQuery = true)
@@ -119,6 +119,7 @@ public interface TransactionIncomeRepository extends JpaRepository<TransactionIn
             @Param("toDateTime") LocalDateTime toDateTime,
             Pageable pageable
     );
+
 
 
 
