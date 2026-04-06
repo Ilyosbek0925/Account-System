@@ -65,8 +65,8 @@ public class ClientController {
         );
     }
 
-    @GetMapping("{baseId}")
-    public ResponseEntity<ApiResponse<List<ClientResponseDTO>>> getByAgentId(@PathVariable UUID baseId,
+    @GetMapping("base/{baseId}")
+    public ResponseEntity<ApiResponse<List<ClientResponseDTO>>> getByBaseId(@PathVariable UUID baseId,
                                                                              @RequestParam(required = false, defaultValue = "10") int size,
                                                                              @RequestParam(required = false, defaultValue = "0") int page) {
 
