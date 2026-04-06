@@ -5,6 +5,8 @@ import com.pet.accountsystem.dto.response.ApiResponse;
 import com.pet.accountsystem.dto.response.ClientResponseDTO;
 import com.pet.accountsystem.service.ClientService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -48,6 +50,7 @@ public class ClientController {
         );
     }
 
+
     @GetMapping
     public ResponseEntity<ApiResponse<List<ClientResponseDTO>>> getAll() {
 
@@ -61,6 +64,25 @@ public class ClientController {
                         .build()
         );
     }
+
+    @GetMapping("{baseId}")
+    public ResponseEntity<ApiResponse<List<ClientResponseDTO>>> getByAgentId(@PathVariable UUID baseId,
+                                                                             @RequestParam(required = false, defaultValue = "10") int size,
+                                                                             @RequestParam(required = false, defaultValue = "0") int page) {
+
+
+        Pageable pageable = PageRequest.of(page, size);
+        List<ClientResponseDTO> list = clientService.getByAgent(baseId,pageable);
+
+        return ResponseEntity.ok(
+                ApiResponse.<List<ClientResponseDTO>>builder()
+                        .message("Clients fetched successfully")
+                        .data(list)
+                        .status(200)
+                        .build()
+        );
+    }
+
 
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<ClientResponseDTO>> updateClient(

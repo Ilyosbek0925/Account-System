@@ -11,6 +11,7 @@ import com.pet.accountsystem.repository.ClientRepository;
 import com.pet.accountsystem.service.ClientService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,6 +25,7 @@ public class ClientServiceImpl implements ClientService {
     private final ClientRepository clientRepository;
     private final BazaRepository bazaRepository;
     private final ClientMapper clientMapper;
+    private final BazaRepository baseRepository;
 
     @Override
     public ClientResponseDTO createClient(ClientRequestDTO requestDTO) {
@@ -78,6 +80,15 @@ public class ClientServiceImpl implements ClientService {
 
         log.info("Client updated id={}", saved.getId());
         return clientMapper.toResponse(saved);
+    }
+
+    @Override
+    public List<ClientResponseDTO> getByAgent(UUID baseId, Pageable pageable) {
+        Base base = baseRepository.findById(baseId).orElseThrow(() -> new DataNotFoundException("base is not found"));
+        List<Client> byBase = clientRepository.findByBase(base, pageable);
+
+
+        return byBase.stream().map(clientMapper::toResponse).toList();
     }
 
     @Override
