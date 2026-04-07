@@ -14,7 +14,7 @@ public interface TransactionInkassaService {
 
     @Nullable TransactionInkassaResponseDTO getById(UUID id);
 
-    @Nullable List<TransactionInkassaResponseDTO> getAll();
+    @Nullable List<TransactionInkassaResponseDTO> getAll(LocalDate fromDate, LocalDate toDate, Pageable pageRequest);
 
     @Nullable TransactionInkassaResponseDTO update(UUID id, TransactionInkassaRequestDTO dto);
 

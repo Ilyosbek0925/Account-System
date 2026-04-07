@@ -213,4 +213,81 @@ public interface TransactionIncomeRepository extends JpaRepository<TransactionIn
             @Param("toDate") LocalDateTime toDate,
             Pageable pageable
     );
+
+
+
+
+
+
+    @Query(value = """
+    select
+        c.id as id,
+        c.first_name as firstName,
+        c.last_name as lastName,
+        ti.created_at as transactionDate,
+        ti.total as usdAmount,
+        string_agg(distinct cast(ut.transaction_type as varchar), ',') as types
+    from transaction_income ti
+    join clients c on c.id = ti.client_id
+    join unit_transactions ut on ut.transaction_income_id = ti.id
+    where  (cast(:fromDate as timestamp) is null or ti.created_at >= cast(:fromDate as timestamp))
+              and (cast(:toDate as timestamp) is null or ti.created_at < cast(:toDate as timestamp))
+    group by c.id, c.first_name, c.last_name, ti.id, ti.created_at, ti.total
+    order by ti.created_at desc
+    """,
+            countQuery = """
+    select count(*)
+    from (
+        select ti.id
+        from transaction_income ti
+        join clients c on c.id = ti.client_id
+        join unit_transactions ut on ut.transaction_income_id = ti.id
+        where (cast(:fromDate as timestamp) is null or ti.created_at >= cast(:fromDate as timestamp))
+              and (cast(:toDate as timestamp) is null or ti.created_at < cast(:toDate as timestamp))
+        group by c.id, c.first_name, c.last_name, ti.id, ti.created_at, ti.total
+    ) t
+    """,
+            nativeQuery = true)
+    Page<TransactionAllTypeProjection> findTransactionsByAllTypesForAdmin(
+            @Param("fromDate") LocalDateTime fromDate,
+            @Param("toDate") LocalDateTime toDate,
+            Pageable pageable
+    );
+
+
+
+
+    @Query(value = """
+        select
+            ti.id as Id,
+            c.first_name as firstName,
+            c.last_name as lastName,
+            ti.created_at as transactionDate,
+            ut.usd_amount as usdAmount
+        from transaction_income ti
+        join clients c on c.id = ti.client_id
+        join unit_transactions ut on ut.transaction_income_id = ti.id
+        where  (:transactionType is null or ut.transaction_type = :transactionType)
+           and (cast(:fromDate as timestamp) is null or ti.created_at >= cast(:fromDate as timestamp))
+              and (cast(:toDate as timestamp) is null or ti.created_at < cast(:toDate as timestamp))
+        order by ti.created_at desc
+        """,
+            countQuery = """
+        select count(*)
+        from transaction_income ti
+        join clients c on c.id = ti.client_id
+        join unit_transactions ut on ut.transaction_income_id = ti.id
+        where  (:transactionType is null or ut.transaction_type = :transactionType)
+           and (cast(:fromDate as timestamp) is null or ti.created_at >= cast(:fromDate as timestamp))
+              and (cast(:toDate as timestamp) is null or ti.created_at < cast(:toDate as timestamp))
+        """,
+            nativeQuery = true)
+    Page<TransactionReportProjection> findTransactionsForAdmin(
+            @Param("transactionType") String transactionType,
+            @Param("fromDate") LocalDateTime fromDate,
+            @Param("toDate") LocalDateTime toDate,
+            Pageable pageable
+    );
+
+
 }

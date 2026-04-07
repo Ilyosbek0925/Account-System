@@ -84,7 +84,7 @@ public class TransactionInkassaServiceImpl implements TransactionInkassaService 
     }
 
     @Override
-    public List<TransactionInkassaResponseDTO> getAll() {
+    public List<TransactionInkassaResponseDTO> getAll(LocalDate fromDate, LocalDate toDate, Pageable pageRequest) {
         log.info("Fetching all transaction inkassa records");
 
         return transactionInkassaRepository.findAll()

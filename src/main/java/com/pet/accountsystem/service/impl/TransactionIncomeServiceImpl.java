@@ -143,6 +143,33 @@ clientBalanceService.addMoney(dto,client);
         Page<TransactionReportProjection> transactions = transactionIncomeRepository.findTransactionsByClient(clientId, type.toString(), fromDateTime, toDateTime, pageable);
         return transactions.stream().map(transactionIncomeMapper::toTransactionAgentResponse).toList();
     }
+
+    @Override
+    public List<TransactionIncomeByRoleResponse> getAll(LocalDate startDate, LocalDate endDate, TransactionType type, Pageable pageable) {
+
+        LocalDateTime fromDateTime = null;
+        LocalDateTime toDateTime = null;
+        if (startDate != null) {
+            fromDateTime = startDate.atStartOfDay();
+        }
+        if (endDate != null) {
+            toDateTime = endDate.atTime(23, 59, 59);
+        }
+        System.out.println(type);
+
+        if (type == null) {
+            System.out.println("come to type");
+            Page<TransactionAllTypeProjection> allTypeProjections = transactionIncomeRepository.findTransactionsByAllTypesForAdmin(fromDateTime, toDateTime, pageable);
+            allTypeProjections.forEach(projection -> System.out.println(projection.getTypes()));
+            System.out.println("last");
+            return allTypeProjections.stream().map(transactionIncomeMapper::toTransactionAgentResponse).toList();
+        }
+
+
+        Page<TransactionReportProjection> transactions = transactionIncomeRepository.findTransactionsForAdmin(type.toString(), fromDateTime, toDateTime, pageable);
+        return transactions.stream().map(transactionIncomeMapper::toTransactionAgentResponse).toList();
+    }
+
     @Override
     public TransactionIncomeResponse update(UUID id, TransactionIncomeRequestDTO dto) {
         log.info("Updating transaction income id={}", id);

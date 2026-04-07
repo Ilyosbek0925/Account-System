@@ -88,10 +88,15 @@ public class TransactionInkassaController {
 
 
 
-    @GetMapping
-    public ResponseEntity<ApiResponse<List<TransactionInkassaResponseDTO>>> getAll() {
+    @GetMapping()
+    public ResponseEntity<ApiResponse<List<TransactionInkassaResponseDTO>>> getAll(@RequestParam(required = false, defaultValue = "10") int size,
+                                                                                   @RequestParam(required = false, defaultValue = "0") int page,
+                                                                                   @RequestParam(required = false) LocalDate fromDate,
+                                                                                   @RequestParam(required = false) LocalDate toDate) {
 
-        List<TransactionInkassaResponseDTO> response = transactionInkassaService.getAll();
+
+        Pageable pageRequest = PageRequest.of(page, size);
+        List<TransactionInkassaResponseDTO> response = transactionInkassaService.getAll(fromDate,toDate,pageRequest);
 
         return ResponseEntity.ok(
                 ApiResponse.<List<TransactionInkassaResponseDTO>>builder()

@@ -97,6 +97,32 @@ public class TransactionIncomeController {
     }
 
 
+
+    @GetMapping()
+    public ResponseEntity<ApiResponse<List<TransactionIncomeByRoleResponse>>> getAll(
+            @RequestParam(required = false) TransactionType type,
+            @RequestParam(required = false) LocalDate fromDate,
+            @RequestParam(required = false) LocalDate toDate,
+            @RequestParam(required = false, defaultValue = "10") int size,
+            @RequestParam(required = false, defaultValue = "0") int page
+    ) {
+        Pageable pageable = PageRequest.of(page, size);
+
+
+        List<TransactionIncomeByRoleResponse> allByAgentId = transactionIncomeService.getAll(fromDate, toDate, type, pageable);
+
+        return ResponseEntity.ok(
+                ApiResponse.<List<TransactionIncomeByRoleResponse>>builder()
+                        .message("Transaction incomes fetched successfully")
+                        .data(allByAgentId)
+                        .status(200)
+                        .build()
+        );
+    }
+
+
+
+
     @GetMapping("/client/{clientId}")
     public ResponseEntity<ApiResponse<List<TransactionIncomeByRoleResponse>>> getAllByClientId(
             @PathVariable UUID clientId,

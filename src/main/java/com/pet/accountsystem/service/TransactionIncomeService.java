@@ -27,4 +27,5 @@ public interface TransactionIncomeService {
 
     List<TransactionIncomeByRoleResponse> getAllByClientId(UUID clientId, LocalDate fromDate, LocalDate toDate, TransactionType type, Pageable pageable);
 
+    List<TransactionIncomeByRoleResponse> getAll(LocalDate fromDate, LocalDate toDate, TransactionType type, Pageable pageable);
 }
