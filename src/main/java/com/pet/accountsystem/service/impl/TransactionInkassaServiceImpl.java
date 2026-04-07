@@ -6,16 +6,21 @@ import com.pet.accountsystem.entity.*;
 import com.pet.accountsystem.exception.DataNotFoundException;
 import com.pet.accountsystem.exception.NotAcceptableException;
 import com.pet.accountsystem.mapper.TransactionInkassaMapper;
+import com.pet.accountsystem.projection.TransactionInkassaByAdminProjection;
 import com.pet.accountsystem.repository.*;
 import com.pet.accountsystem.service.AdminBalanceService;
 import com.pet.accountsystem.service.AgentBalanceService;
 import com.pet.accountsystem.service.TransactionInkassaService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -118,5 +123,21 @@ public class TransactionInkassaServiceImpl implements TransactionInkassaService 
         transactionInkassaRepository.delete(inkassa);
 
         log.info("Transaction inkassa deleted id={}", id);
+    }
+
+    @Override
+    public List<TransactionInkassaResponseDTO> getTransactionInkasssaByAdminId(UUID adminId, LocalDate fromDate, LocalDate toDate, Pageable pageable) {
+        LocalDateTime fromDateTime = null;
+        LocalDateTime toDateTime = null;
+        if (fromDate != null) {
+            fromDateTime
+                    = fromDate.atStartOfDay();
+        }
+        if (toDate != null) {
+            toDateTime = toDate.atTime(23, 59, 59);
+        }
+      Page<TransactionInkassaByAdminProjection> list=transactionInkassaRepository.findByAdmin(adminId,fromDateTime,toDateTime,pageable);
+//return list.map(t->transactionInkassaMapper.toResponse(t))
+        return null;
     }
 }

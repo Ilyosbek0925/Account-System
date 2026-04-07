@@ -3,6 +3,7 @@ package com.pet.accountsystem.dto.response;
 
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
@@ -12,7 +13,12 @@ import java.util.UUID;
 public class TransactionInkassaResponseDTO {
     private UUID id;
 
+    private LocalDateTime transactionTime;
+
     private UUID adminId;
+    private String agentFirstName;
+    private String agentLastName;
+    private String agentPhoneNumber;
 
     private UUID agentId;
 

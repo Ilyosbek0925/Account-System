@@ -5,9 +5,13 @@ import com.pet.accountsystem.dto.response.TransactionInkassaResponseDTO;
 import com.pet.accountsystem.dto.response.ApiResponse;
 import com.pet.accountsystem.service.TransactionInkassaService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -48,9 +52,17 @@ public class TransactionInkassaController {
     }
 
 
+    @GetMapping("/{adminId}")
+    public ResponseEntity<ApiResponse<List<TransactionInkassaResponseDTO>>> getTransactionsByAdmin(@PathVariable UUID adminId,
+                                                                                                   @RequestParam(required = false, defaultValue = "10") int size,
+                                                                                                   @RequestParam(required = false, defaultValue = "0") int page,
+                                                                                                   @RequestParam(required = false) LocalDate fromDate,
+                                                                                                   @RequestParam(required = false) LocalDate toDate) {
 
-
-
+        Pageable pageRequest = PageRequest.of(page, size);
+        List<TransactionInkassaResponseDTO> list = transactionInkassaService.getTransactionInkasssaByAdminId(adminId,fromDate,toDate,pageRequest);
+return null;
+    }
 
 
     @GetMapping

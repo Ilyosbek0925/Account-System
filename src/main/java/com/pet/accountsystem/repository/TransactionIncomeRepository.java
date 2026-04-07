@@ -153,8 +153,8 @@ public interface TransactionIncomeRepository extends JpaRepository<TransactionIn
     join clients c on c.id = ti.client_id
     join unit_transactions ut on ut.transaction_income_id = ti.id
     where ti.client_id = :clientId
-      and (:fromDateTime is null or ti.created_at >= :fromDateTime)
-      and (:toDateTime is null or ti.created_at < :toDateTime)
+            and (cast(:fromDate as timestamp) is null or ti.created_at >= cast(:fromDate as timestamp))
+              and (cast(:toDate as timestamp) is null or ti.created_at < cast(:toDate as timestamp))
     group by c.id, c.first_name, c.last_name, ti.id, ti.created_at, ti.total
     order by ti.created_at desc
     """,
@@ -166,16 +166,16 @@ public interface TransactionIncomeRepository extends JpaRepository<TransactionIn
         join clients c on c.id = ti.client_id
         join unit_transactions ut on ut.transaction_income_id = ti.id
         where ti.client_id = :clientId
-          and (:fromDateTime is null or ti.created_at >= :fromDateTime)
-          and (:toDateTime is null or ti.created_at < :toDateTime)
+           and (cast(:fromDate as timestamp) is null or ti.created_at >= cast(:fromDate as timestamp))
+              and (cast(:toDate as timestamp) is null or ti.created_at < cast(:toDate as timestamp))
         group by c.id, c.first_name, c.last_name, ti.id, ti.created_at, ti.total
     ) t
     """,
             nativeQuery = true)
     Page<TransactionAllTypeProjection> findTransactionsByClientByAllTypes(
             @Param("clientId") UUID clientId,
-            @Param("fromDateTime") LocalDateTime fromDateTime,
-            @Param("toDateTime") LocalDateTime toDateTime,
+            @Param("fromDate") LocalDateTime fromDate,
+            @Param("toDate") LocalDateTime toDate,
             Pageable pageable
     );
 
