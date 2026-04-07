@@ -127,16 +127,27 @@ public class TransactionInkassaServiceImpl implements TransactionInkassaService 
 
     @Override
     public List<TransactionInkassaResponseDTO> getTransactionInkasssaByAdminId(UUID adminId, LocalDate fromDate, LocalDate toDate, Pageable pageable) {
-        LocalDateTime fromDateTime = null;
-        LocalDateTime toDateTime = null;
-        fromDateTime = (fromDate == null)
+        LocalDateTime fromDateTime = (fromDate == null)
                 ? LocalDateTime.of(1970, 1, 1, 0, 0)
-                : fromDateTime;
+                : fromDate.atStartOfDay();
 
-        toDateTime = (toDate == null)
+        LocalDateTime toDateTime = (toDate == null)
                 ? LocalDateTime.of(9999, 12, 31, 23, 59)
-                : toDateTime;
+                : toDate.atTime(23, 59, 59);
       Page<TransactionInkassaByAdminProjection> list=transactionInkassaRepository.findByAdmin(adminId,fromDateTime,toDateTime,pageable);
 return list.map(transactionInkassaMapper::toResponse).toList();
+    }
+
+    @Override
+    public List<TransactionInkassaResponseDTO> getTransactionInkasssaByAgentId(UUID agentId, LocalDate fromDate, LocalDate toDate, Pageable pageable) {
+        LocalDateTime fromDateTime = (fromDate == null)
+                ? LocalDateTime.of(1970, 1, 1, 0, 0)
+                : fromDate.atStartOfDay();
+
+        LocalDateTime toDateTime = (toDate == null)
+                ? LocalDateTime.of(9999, 12, 31, 23, 59)
+                : toDate.atTime(23, 59, 59);
+        Page<TransactionInkassaByAdminProjection> list=transactionInkassaRepository.findByAgent(agentId,fromDateTime,toDateTime,pageable);
+        return list.map(transactionInkassaMapper::toResponse).toList();
     }
 }

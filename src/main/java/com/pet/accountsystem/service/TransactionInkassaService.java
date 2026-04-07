@@ -21,4 +21,6 @@ public interface TransactionInkassaService {
     void deleteById(UUID id);
 
     List<TransactionInkassaResponseDTO> getTransactionInkasssaByAdminId(UUID adminId, LocalDate fromDate, LocalDate toDate, Pageable pageRequest);
+
+    List<TransactionInkassaResponseDTO> getTransactionInkasssaByAgentId(UUID agentId, LocalDate fromDate, LocalDate toDate, Pageable pageRequest);
 }

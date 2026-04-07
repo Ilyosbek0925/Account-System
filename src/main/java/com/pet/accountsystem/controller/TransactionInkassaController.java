@@ -69,6 +69,25 @@ public class TransactionInkassaController {
     }
 
 
+    @GetMapping("agent/{agentId}")
+    public ResponseEntity<ApiResponse<List<TransactionInkassaResponseDTO>>> getTransactionsByAgent(@PathVariable UUID agentId,
+                                                                                                   @RequestParam(required = false, defaultValue = "10") int size,
+                                                                                                   @RequestParam(required = false, defaultValue = "0") int page,
+                                                                                                   @RequestParam(required = false) LocalDate fromDate,
+                                                                                                   @RequestParam(required = false) LocalDate toDate) {
+
+        Pageable pageRequest = PageRequest.of(page, size);
+        List<TransactionInkassaResponseDTO> list = transactionInkassaService.getTransactionInkasssaByAgentId(agentId, fromDate, toDate, pageRequest);
+        return ResponseEntity.ok(ApiResponse.<List<TransactionInkassaResponseDTO>>builder()
+                .status(200)
+                .message("fetching transaction inkassa successfully")
+                .data(list)
+                .build());
+    }
+
+
+
+
     @GetMapping
     public ResponseEntity<ApiResponse<List<TransactionInkassaResponseDTO>>> getAll() {
 

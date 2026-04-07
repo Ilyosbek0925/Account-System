@@ -68,6 +68,7 @@ public class TransactionInkassaMapper {
 
     public TransactionInkassaResponseDTO toResponse(TransactionInkassaByAdminProjection t) {
         return TransactionInkassaResponseDTO.builder()
+                .id(t.getId())
                 .agentId(t.getAgentId())
                 .agentFirstName(t.getAgentFirstName())
                 .agentLastName(t.getAgentLastName())
