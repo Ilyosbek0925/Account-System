@@ -133,14 +133,14 @@ clientBalanceService.addMoney(dto,client);
 
         if (type == null) {
             System.out.println("come to type");
-            Page<TransactionAllTypeProjection> allTypeProjections = transactionIncomeRepository.findTransactionsByAllTypes(clientId, fromDateTime, toDateTime, pageable);
+            Page<TransactionAllTypeProjection> allTypeProjections = transactionIncomeRepository.findTransactionsByClientByAllTypes(clientId, fromDateTime, toDateTime, pageable);
             allTypeProjections.forEach(projection -> System.out.println(projection.getTypes()));
             System.out.println("last");
             return allTypeProjections.stream().map(transactionIncomeMapper::toTransactionAgentResponse).toList();
         }
 
 
-        Page<TransactionReportProjection> transactions = transactionIncomeRepository.findTransactions(clientId, type.toString(), fromDateTime, toDateTime, pageable);
+        Page<TransactionReportProjection> transactions = transactionIncomeRepository.findTransactionsByClient(clientId, type.toString(), fromDateTime, toDateTime, pageable);
         return transactions.stream().map(transactionIncomeMapper::toTransactionAgentResponse).toList();
     }
     @Override

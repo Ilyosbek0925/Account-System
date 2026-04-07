@@ -97,9 +97,6 @@ public class TransactionIncomeController {
     }
 
 
-
-
-
     @GetMapping("/client/{clientId}")
     public ResponseEntity<ApiResponse<List<TransactionIncomeByRoleResponse>>> getAllByClientId(
             @PathVariable UUID clientId,
@@ -122,16 +119,6 @@ public class TransactionIncomeController {
                         .build()
         );
     }
-
-
-
-
-
-
-
-
-
-
 
 
     @PutMapping("/{id}")
