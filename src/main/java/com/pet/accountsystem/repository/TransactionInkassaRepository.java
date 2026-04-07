@@ -12,28 +12,26 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 public interface TransactionInkassaRepository extends JpaRepository<TransactionInkassa, UUID> {
-
-
     @Query("""
-        select 
-            t.id as id,
-            t.createdAt as transactionTime,
-            a.firstName as agentFirstName,
-            a.lastName as agentLastName,
-            a.phoneNumber as agentPhoneNumber,
-            a.id as agentId,
-            t.usdAmount as usdAmount,
-            t.uzsAmount as uzsAmount,
-            t.clickAmount as clickAmount,
-            t.bankAmount as bankAmount,
-            t.description as description
-        from TransactionInkassa t
-        join t.agent a
-        join t.admin ad
-        where ad.id = :adminId
-            and (cast(:fromDate as timestamp) is null or t.createdAt >= cast(:fromDate as timestamp))
-              and (cast(:toDate as timestamp) is null or t.createdAt < cast(:toDate as timestamp))
-    """)
+    select 
+        t.id as id,
+        t.createdAt as transactionTime,
+        a.firstName as agentFirstName,
+        a.lastName as agentLastName,
+        a.phoneNumber as agentPhoneNumber,
+        a.id as agentId,
+        t.usdAmount as usdAmount,
+        t.uzsAmount as uzsAmount,
+        t.clickAmount as clickAmount,
+        t.bankAmount as bankAmount,
+        t.description as description
+    from TransactionInkassa t
+    join t.agent a
+    join t.admin ad
+    where ad.id = :adminId
+
+""")
+
     Page<TransactionInkassaByAdminProjection> findByAdmin(
             @Param("adminId") UUID adminId,
             @Param("fromDate") LocalDateTime fromDate,

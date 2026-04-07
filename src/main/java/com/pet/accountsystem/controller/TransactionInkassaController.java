@@ -52,7 +52,7 @@ public class TransactionInkassaController {
     }
 
 
-    @GetMapping("/{adminId}")
+    @GetMapping("admin/{adminId}")
     public ResponseEntity<ApiResponse<List<TransactionInkassaResponseDTO>>> getTransactionsByAdmin(@PathVariable UUID adminId,
                                                                                                    @RequestParam(required = false, defaultValue = "10") int size,
                                                                                                    @RequestParam(required = false, defaultValue = "0") int page,
@@ -60,8 +60,12 @@ public class TransactionInkassaController {
                                                                                                    @RequestParam(required = false) LocalDate toDate) {
 
         Pageable pageRequest = PageRequest.of(page, size);
-        List<TransactionInkassaResponseDTO> list = transactionInkassaService.getTransactionInkasssaByAdminId(adminId,fromDate,toDate,pageRequest);
-return null;
+        List<TransactionInkassaResponseDTO> list = transactionInkassaService.getTransactionInkasssaByAdminId(adminId, fromDate, toDate, pageRequest);
+        return ResponseEntity.ok(ApiResponse.<List<TransactionInkassaResponseDTO>>builder()
+                .status(200)
+                .message("fetching transaction inkassa successfully")
+                .data(list)
+                .build());
     }
 
 

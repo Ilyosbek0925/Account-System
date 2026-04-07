@@ -129,15 +129,14 @@ public class TransactionInkassaServiceImpl implements TransactionInkassaService 
     public List<TransactionInkassaResponseDTO> getTransactionInkasssaByAdminId(UUID adminId, LocalDate fromDate, LocalDate toDate, Pageable pageable) {
         LocalDateTime fromDateTime = null;
         LocalDateTime toDateTime = null;
-        if (fromDate != null) {
-            fromDateTime
-                    = fromDate.atStartOfDay();
-        }
-        if (toDate != null) {
-            toDateTime = toDate.atTime(23, 59, 59);
-        }
+        fromDateTime = (fromDate == null)
+                ? LocalDateTime.of(1970, 1, 1, 0, 0)
+                : fromDateTime;
+
+        toDateTime = (toDate == null)
+                ? LocalDateTime.of(9999, 12, 31, 23, 59)
+                : toDateTime;
       Page<TransactionInkassaByAdminProjection> list=transactionInkassaRepository.findByAdmin(adminId,fromDateTime,toDateTime,pageable);
-//return list.map(t->transactionInkassaMapper.toResponse(t))
-        return null;
+return list.map(transactionInkassaMapper::toResponse).toList();
     }
 }
