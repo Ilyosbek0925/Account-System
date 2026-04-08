@@ -52,9 +52,13 @@ public class ClientController {
 
 
     @GetMapping
-    public ResponseEntity<ApiResponse<List<ClientResponseDTO>>> getAll() {
+    public ResponseEntity<ApiResponse<List<ClientResponseDTO>>> getAll(@RequestParam(required = false, defaultValue = "0") int page,
+                                                                       @RequestParam(required = false, defaultValue = "10") int size,
+                                                                       @RequestParam(required = false) String name) {
 
-        List<ClientResponseDTO> list = clientService.getAll();
+
+        Pageable pageable = PageRequest.of(page, size);
+        List<ClientResponseDTO> list = clientService.getAll(pageable,name);
 
         return ResponseEntity.ok(
                 ApiResponse.<List<ClientResponseDTO>>builder()
@@ -67,12 +71,12 @@ public class ClientController {
 
     @GetMapping("base/{baseId}")
     public ResponseEntity<ApiResponse<List<ClientResponseDTO>>> getByBaseId(@PathVariable UUID baseId,
-                                                                             @RequestParam(required = false, defaultValue = "10") int size,
-                                                                             @RequestParam(required = false, defaultValue = "0") int page) {
+                                                                            @RequestParam(required = false, defaultValue = "10") int size,
+                                                                            @RequestParam(required = false, defaultValue = "0") int page) {
 
 
         Pageable pageable = PageRequest.of(page, size);
-        List<ClientResponseDTO> list = clientService.getByAgent(baseId,pageable);
+        List<ClientResponseDTO> list = clientService.getByAgent(baseId, pageable);
 
         return ResponseEntity.ok(
                 ApiResponse.<List<ClientResponseDTO>>builder()

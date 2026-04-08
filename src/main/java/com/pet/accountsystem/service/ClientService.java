@@ -16,7 +16,7 @@ public interface ClientService {
 
     ClientResponseDTO getById(UUID id);
 
-    List<ClientResponseDTO> getAll();
+    List<ClientResponseDTO> getAll(Pageable pageable, String name);
 
     ClientResponseDTO update(UUID id, ClientRequestDTO requestDTO);
 

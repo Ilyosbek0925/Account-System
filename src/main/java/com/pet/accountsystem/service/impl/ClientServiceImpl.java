@@ -54,10 +54,10 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public List<ClientResponseDTO> getAll() {
+    public List<ClientResponseDTO> getAll(Pageable pageable, String name) {
         log.info("Fetching all clients");
 
-        return clientRepository.findAll()
+   return clientRepository.findAllFiltered(pageable,name)
                 .stream()
                 .map(clientMapper::toResponse)
                 .toList();
