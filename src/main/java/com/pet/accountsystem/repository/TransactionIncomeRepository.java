@@ -85,7 +85,7 @@ public interface TransactionIncomeRepository extends JpaRepository<TransactionIn
 
     @Query(value = """
         select
-            c.id as id,
+            ti.id as id,
             c.first_name as firstName,
             c.last_name as lastName,
             ti.created_at as transactionDate,
@@ -145,7 +145,7 @@ public interface TransactionIncomeRepository extends JpaRepository<TransactionIn
 
     @Query(value = """
     select
-        c.id as id,
+        ti.id as id,
         c.first_name as firstName,
         c.last_name as lastName,
         ti.created_at as transactionDate,
@@ -223,7 +223,7 @@ public interface TransactionIncomeRepository extends JpaRepository<TransactionIn
 
     @Query(value = """
     select
-        c.id as id,
+        ti.id as id,
         c.first_name as firstName,
         c.last_name as lastName,
         ti.created_at as transactionDate,
