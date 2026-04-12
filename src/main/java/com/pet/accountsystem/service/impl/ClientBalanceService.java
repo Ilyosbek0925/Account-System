@@ -3,27 +3,31 @@ package com.pet.accountsystem.service.impl;
 
 import com.pet.accountsystem.dto.request.TransactionIncomeRequestDTO;
 import com.pet.accountsystem.dto.request.TransactionTypeRequest;
+import com.pet.accountsystem.dto.response.ClientBalanceResponse;
 import com.pet.accountsystem.entity.Client;
 import com.pet.accountsystem.entity.ClientBalance;
 import com.pet.accountsystem.entity.enums.Currency;
+import com.pet.accountsystem.mapper.ClientBalanceMapper;
 import com.pet.accountsystem.repository.ClientBalanceRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class ClientBalanceService {
 
-    private final ClientBalanceRepository clientBalanceRepository;
+    private final ClientBalanceRepository repository;
+private final ClientBalanceMapper clientBalanceMapper;
 
 
 
-
-    public void addMoney(TransactionIncomeRequestDTO dto, Client client) {
-        Optional<ClientBalance> byClient = clientBalanceRepository.findByClient(client);
+    public void addMoney(TransactionIncomeRequestDTO dto, Client client,BigDecimal total) {
+        Optional<ClientBalance> byClient = repository.findByClient(client);
         BigDecimal clickAmount = BigDecimal.ZERO;
         BigDecimal usdAmount = BigDecimal.ZERO;
         BigDecimal uzsAmount = BigDecimal.ZERO;
@@ -57,15 +61,29 @@ public class ClientBalanceService {
             clientBalance.setClickAmount(clickAmount);
             clientBalance.setUsdAmount(usdAmount);
             clientBalance.setClient(client);
-            clientBalanceRepository.save(clientBalance);
+            clientBalance.setTotal(total);
+            repository.save(clientBalance);
         } else {
             ClientBalance clientBalance = byClient.get();
             clientBalance.setUsdAmount(clientBalance.getUsdAmount().add(usdAmount));
             clientBalance.setBankAmount(clientBalance.getBankAmount().add(bankAmount));
             clientBalance.setUzsAmount(clientBalance.getUzsAmount().add(uzsAmount));
             clientBalance.setClickAmount(clientBalance.getClickAmount().add(clickAmount));
-            clientBalanceRepository.save(clientBalance);
+            clientBalance.setTotal(clientBalance.getTotal()==null?total:clientBalance.getTotal().add(total));
+            repository.save(clientBalance);
         }
 
     }
+
+    public ClientBalanceResponse getById(UUID id) {
+        return clientBalanceMapper.clientBalanceResponse(repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Balance not found")));
+    }
+
+    public List<ClientBalanceResponse> getAll() {
+        return repository.findAll().stream().map(clientBalanceMapper::clientBalanceResponse).toList();
+    }
+
+
+
 }

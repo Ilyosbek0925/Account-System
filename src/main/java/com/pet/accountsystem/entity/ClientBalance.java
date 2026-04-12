@@ -20,6 +20,7 @@ public class ClientBalance extends BaseEntity{
     private BigDecimal uzsAmount;
     private BigDecimal clickAmount;
     private BigDecimal bankAmount;
+    private BigDecimal total;
 
 
     @OneToOne

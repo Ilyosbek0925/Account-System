@@ -67,7 +67,7 @@ public class TransactionIncomeServiceImpl implements TransactionIncomeService {
         List<UnitTransaction> saved = unitTransactionRepository.saveAll(list);
 
         agentBalanceService.addMoney(dto, agent,transactionIncome.getTotal());
-        clientBalanceService.addMoney(dto, client);
+        clientBalanceService.addMoney(dto, client,transactionIncome.getTotal());
         agentSalary.addSalary(dto, agent, transactionIncome.getTotal());
 
         log.info("Transaction income created id={}", saved.get(0).getId());

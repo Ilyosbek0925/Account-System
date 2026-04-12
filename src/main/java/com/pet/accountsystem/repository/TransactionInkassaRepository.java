@@ -13,25 +13,24 @@ import java.util.UUID;
 
 public interface TransactionInkassaRepository extends JpaRepository<TransactionInkassa, UUID> {
     @Query("""
-    select 
-        t.id as id,
-        t.createdAt as transactionTime,
-        a.firstName as agentFirstName,
-        a.lastName as agentLastName,
-        a.phoneNumber as agentPhoneNumber,
-        a.id as agentId,
-        t.usdAmount as usdAmount,
-        t.uzsAmount as uzsAmount,
-        t.clickAmount as clickAmount,
-        t.bankAmount as bankAmount,
-        t.description as description
-    from TransactionInkassa t
-    join t.agent a
-    join t.admin ad
-    where ad.id = :adminId
-
-""")
-
+            select 
+                t.id as id,
+                t.createdAt as transactionTime,
+                a.firstName as agentFirstName,
+                a.lastName as agentLastName,
+                a.phoneNumber as agentPhoneNumber,
+                a.id as agentId,
+                t.usdAmount as usdAmount,
+                t.uzsAmount as uzsAmount,
+                t.clickAmount as clickAmount,
+                t.bankAmount as bankAmount,
+                t.description as description
+            from TransactionInkassa t
+            join t.agent a
+            join t.admin ad
+            where ad.id = :adminId
+            order by t.createdAt desc
+            """)
     Page<TransactionInkassaByAdminProjection> findByAdmin(
             @Param("adminId") UUID adminId,
             @Param("fromDate") LocalDateTime fromDate,
@@ -40,28 +39,24 @@ public interface TransactionInkassaRepository extends JpaRepository<TransactionI
     );
 
 
-
-
-
-
     @Query("""
-    select 
-        t.id as id,
-        t.createdAt as transactionTime,
-        a.firstName as agentFirstName,
-        a.lastName as agentLastName,
-        a.phoneNumber as agentPhoneNumber,
-        a.id as agentId,
-        t.usdAmount as usdAmount,
-        t.uzsAmount as uzsAmount,
-        t.clickAmount as clickAmount,
-        t.bankAmount as bankAmount,
-        t.description as description
-    from TransactionInkassa t
-    join t.agent a
-    where a.id = :agentId
-""")
-
+            select 
+                t.id as id,
+                t.createdAt as transactionTime,
+                a.firstName as agentFirstName,
+                a.lastName as agentLastName,
+                a.phoneNumber as agentPhoneNumber,
+                a.id as agentId,
+                t.usdAmount as usdAmount,
+                t.uzsAmount as uzsAmount,
+                t.clickAmount as clickAmount,
+                t.bankAmount as bankAmount,
+                t.description as description
+            from TransactionInkassa t
+            join t.agent a
+            where a.id = :agentId
+            order by t.createdAt desc
+            """)
     Page<TransactionInkassaByAdminProjection> findByAgent(
             @Param("agentId") UUID agentId,
             @Param("fromDate") LocalDateTime fromDate,
