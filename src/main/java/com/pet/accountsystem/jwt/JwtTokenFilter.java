@@ -9,7 +9,9 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.NonNull;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.util.Date;
@@ -41,7 +43,9 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         token = token.substring(7);
         Jws<Claims> claimsJws = jwtService.extractToken(token);
         Date expiration = claimsJws.getBody().getExpiration();
-        if (new Date().after(expiration)) throw new NotAcceptableException("Expired access token!");
+        if (new Date().after(expiration)) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Token expired");
+        }
         try {
             logger.warn("so so so");
             authenticationService.authenticate(claimsJws.getBody(), request);
