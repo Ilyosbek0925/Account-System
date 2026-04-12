@@ -4,6 +4,7 @@ import com.pet.accountsystem.dto.TotalTransactionDTO;
 import com.pet.accountsystem.dto.request.TransactionIncomeRequestDTO;
 import com.pet.accountsystem.dto.response.ApiResponse;
 import com.pet.accountsystem.dto.response.TransactionIncomeByRoleResponse;
+import com.pet.accountsystem.dto.response.TransactionIncomeInfoResponse;
 import com.pet.accountsystem.dto.response.TransactionIncomeResponse;
 import com.pet.accountsystem.entity.enums.TransactionType;
 import com.pet.accountsystem.service.TransactionIncomeService;
@@ -44,19 +45,7 @@ public class TransactionIncomeController {
         );
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<TransactionIncomeResponse>> getById(@PathVariable UUID id) {
 
-        TransactionIncomeResponse response = transactionIncomeService.getById(id);
-
-        return ResponseEntity.ok(
-                ApiResponse.<TransactionIncomeResponse>builder()
-                        .message("Transaction income fetched successfully")
-                        .data(response)
-                        .status(200)
-                        .build()
-        );
-    }
 
     @GetMapping("/{agentId}/total-transaction-info")
     public ResponseEntity<ApiResponse<TotalTransactionDTO>> getTotalTransaction(@PathVariable UUID agentId) {
@@ -71,6 +60,23 @@ public class TransactionIncomeController {
                         .build()
         );
     }
+
+
+
+    @GetMapping("/{transactionIncomeId}")
+    public ResponseEntity<ApiResponse<TransactionIncomeInfoResponse>>getTransactionIncomeDetail(@PathVariable UUID transactionIncomeId){
+        TransactionIncomeInfoResponse response = transactionIncomeService.getById(transactionIncomeId);
+
+        return ResponseEntity.ok(
+                ApiResponse.<TransactionIncomeInfoResponse>builder()
+                        .message("Transaction income fetched successfully")
+                        .data(response)
+                        .status(200)
+                        .build()
+        );
+    }
+
+
 
 
     @GetMapping("/agent/{agentId}")
@@ -147,12 +153,12 @@ public class TransactionIncomeController {
     }
 
 
-    @PutMapping("/{id}")
+    @PutMapping("/{transactionIncomeId}")
     public ResponseEntity<ApiResponse<TransactionIncomeResponse>> update(
-            @PathVariable UUID id,
+            @PathVariable UUID transactionIncomeId,
             @RequestBody TransactionIncomeRequestDTO dto
     ) {
-        TransactionIncomeResponse response = transactionIncomeService.update(id, dto);
+        TransactionIncomeResponse response = transactionIncomeService.update(transactionIncomeId, dto);
 
         return ResponseEntity.ok(
                 ApiResponse.<TransactionIncomeResponse>builder()

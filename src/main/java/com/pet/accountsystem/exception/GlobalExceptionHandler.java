@@ -28,7 +28,7 @@ public class GlobalExceptionHandler {
                 .body(
                         ApiResponse.<String>builder()
                                 .status(404)
-                                .message("Data not found")
+                                .message(e.getMessage())
                                 .build()
                 );
     }

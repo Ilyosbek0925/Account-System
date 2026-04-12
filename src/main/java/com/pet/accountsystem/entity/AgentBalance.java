@@ -11,6 +11,7 @@ import java.math.BigDecimal;
 
 @Entity
 @Getter
+@Setter
 @Table(name = "agents_balances")
 public class AgentBalance extends BaseEntity {
 
@@ -18,29 +19,10 @@ public class AgentBalance extends BaseEntity {
     private BigDecimal uzsAmount;
     private BigDecimal clickAmount;
     private BigDecimal bankAmount;
+    private BigDecimal total;
 
     @OneToOne
     @JoinColumn(name = "agent_id")
     private Agent agent;
 
-
-    public void setUsdAmount(BigDecimal usdAmount) {
-        this.usdAmount = usdAmount;
-    }
-
-    public void setUzsAmount(BigDecimal uzsAmount) {
-        this.uzsAmount = uzsAmount;
-    }
-
-    public void setClickAmount(BigDecimal clickAmount) {
-        this.clickAmount = clickAmount;
-    }
-
-    public void setBankAmount(BigDecimal bankAmount) {
-        this.bankAmount = bankAmount;
-    }
-
-    public void setAgent(Agent agent) {
-        this.agent = agent;
-    }
 }

@@ -17,6 +17,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface TransactionIncomeRepository extends JpaRepository<TransactionIncome, UUID>, JpaSpecificationExecutor<TransactionIncome> {
@@ -136,7 +137,8 @@ public interface TransactionIncomeRepository extends JpaRepository<TransactionIn
         """, nativeQuery = true)
     List<TransactionTypeSummary> sumTransactionsByTypes(@Param("agentId") UUID agentId);
 
-    @Query("SELECT u FROM UnitTransaction u WHERE u.transactionIncome.id = :transactionIncomeId")
+    @Query("SELECT u FROM UnitTransaction u" +
+            " WHERE u.transactionIncome.id = :transactionIncomeId")
     List<UnitTransaction> findByTransactionIncomeId(@Param("transactionIncomeId") UUID transactionIncomeId);
 
 

@@ -13,10 +13,5 @@ import java.util.UUID;
 
 public interface TransactionTypeRepository extends JpaRepository<UnitTransaction, UUID>, JpaSpecificationExecutor<UnitTransaction> {
 
-    @Query("""
-   select ut
-   from UnitTransaction ut
-   where ut.transactionIncome in :transactionIncome
-   """)
-    List<UnitTransaction> findByTransactionIncome(@Param("transactionIncome") List<TransactionIncome> transactionIncome);
+    List<UnitTransaction> findByTransactionIncome(TransactionIncome transactionIncome);
 }

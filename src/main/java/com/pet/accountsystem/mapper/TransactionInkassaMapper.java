@@ -30,7 +30,7 @@ public class TransactionInkassaMapper {
 
     public TransactionInkassaResponseDTO toResponse(TransactionInkassa inkassa) {
         if (inkassa == null) return null;
-
+        Agent agent = inkassa.getAgent();
         TransactionInkassaResponseDTO dto = new TransactionInkassaResponseDTO();
         dto.setId(inkassa.getId());
         dto.setAdminId(
@@ -39,12 +39,16 @@ public class TransactionInkassaMapper {
                         : null
         );
         dto.setAgentId(
-                inkassa.getAgent() != null
-                        ? inkassa.getAgent().getId()
+                agent != null
+                        ? agent.getId()
                         : null
         );
         dto.setUsdAmount(FormatUtil.toScale(inkassa.getUsdAmount()));
         dto.setUzsAmount(FormatUtil.toScale(inkassa.getUzsAmount()));
+        dto.setTransactionTime(inkassa.getCreatedAt());
+        dto.setAgentFirstName(agent.getFirstName());
+        dto.setAgentLastName(agent.getLastName());
+        dto.setAgentPhoneNumber(agent.getPhoneNumber());
         dto.setClickAmount(FormatUtil.toScale(inkassa.getClickAmount()));
         dto.setBankAmount(FormatUtil.toScale(inkassa.getBankAmount()));
         dto.setDescription(inkassa.getDescription());

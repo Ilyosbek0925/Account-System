@@ -36,8 +36,7 @@ public class AgentBalanceController {
 
     @GetMapping("/{agentId}")
     public ResponseEntity<ApiResponse<AgentBalanceResponseDTO>> getById(@PathVariable UUID agentId) {
-AgentBalanceResponseDTO agentBalanceResponse= agentBalanceService.getAgentBalanceByAgentId(agentId);
-
+        AgentBalanceResponseDTO agentBalanceResponse = agentBalanceService.getAgentBalanceByAgentId(agentId);
 
         return ResponseEntity.ok(
                 ApiResponse.<AgentBalanceResponseDTO>builder()

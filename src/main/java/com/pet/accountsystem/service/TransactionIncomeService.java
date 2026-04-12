@@ -3,6 +3,7 @@ package com.pet.accountsystem.service;
 import com.pet.accountsystem.dto.TotalTransactionDTO;
 import com.pet.accountsystem.dto.request.TransactionIncomeRequestDTO;
 import com.pet.accountsystem.dto.response.TransactionIncomeByRoleResponse;
+import com.pet.accountsystem.dto.response.TransactionIncomeInfoResponse;
 import com.pet.accountsystem.dto.response.TransactionIncomeResponse;
 import com.pet.accountsystem.entity.enums.TransactionType;
 import org.springframework.data.domain.Pageable;
@@ -14,7 +15,7 @@ import java.util.UUID;
 public interface TransactionIncomeService {
     TransactionIncomeResponse create(TransactionIncomeRequestDTO dto);
 
-    TransactionIncomeResponse getById(UUID id);
+    TransactionIncomeInfoResponse getById(UUID id);
 
 
     TransactionIncomeResponse update(UUID id, TransactionIncomeRequestDTO dto);

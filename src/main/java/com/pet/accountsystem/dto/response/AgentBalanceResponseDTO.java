@@ -13,4 +13,5 @@ public class AgentBalanceResponseDTO {
     private String uzsAmount;
     private String clickAmount;
     private String bankAmount;
+    private String total;
 }

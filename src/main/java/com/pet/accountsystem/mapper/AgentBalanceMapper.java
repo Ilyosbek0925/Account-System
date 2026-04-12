@@ -7,6 +7,7 @@ import com.pet.accountsystem.entity.AgentBalance;
 import com.pet.accountsystem.util.FormatUtil;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.text.Normalizer;
 
 @Component
@@ -30,6 +31,7 @@ public class AgentBalanceMapper {
                 .uzsAmount(FormatUtil.toScale(balance.getUzsAmount()))
                 .clickAmount(FormatUtil.toScale(balance.getClickAmount()))
                 .bankAmount(FormatUtil.toScale(balance.getBankAmount()))
+                .total(FormatUtil.toScale((balance.getTotal()==null)? BigDecimal.ZERO:balance.getTotal()))
                 .build();
     }
 

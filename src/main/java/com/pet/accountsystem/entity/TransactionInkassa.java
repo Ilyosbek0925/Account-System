@@ -1,9 +1,6 @@
 package com.pet.accountsystem.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,7 +16,7 @@ public class TransactionInkassa extends BaseEntity {
     @JoinColumn(name = "admin_id")
     private Admin admin;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "agent_id")
     private Agent agent;
 

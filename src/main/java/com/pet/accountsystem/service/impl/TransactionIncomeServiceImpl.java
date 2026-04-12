@@ -3,6 +3,7 @@ package com.pet.accountsystem.service.impl;
 import com.pet.accountsystem.dto.TotalTransactionDTO;
 import com.pet.accountsystem.dto.request.TransactionIncomeRequestDTO;
 import com.pet.accountsystem.dto.response.TransactionIncomeByRoleResponse;
+import com.pet.accountsystem.dto.response.TransactionIncomeInfoResponse;
 import com.pet.accountsystem.dto.response.TransactionIncomeResponse;
 import com.pet.accountsystem.entity.*;
 import com.pet.accountsystem.entity.enums.TransactionType;
@@ -15,9 +16,7 @@ import com.pet.accountsystem.repository.AgentRepository;
 import com.pet.accountsystem.repository.ClientRepository;
 import com.pet.accountsystem.repository.TransactionIncomeRepository;
 import com.pet.accountsystem.repository.TransactionTypeRepository;
-import com.pet.accountsystem.service.AgentBalanceService;
-import com.pet.accountsystem.service.CurrencyService;
-import com.pet.accountsystem.service.TransactionIncomeService;
+import com.pet.accountsystem.service.*;
 import com.pet.accountsystem.util.CalculatorUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -44,6 +43,7 @@ public class TransactionIncomeServiceImpl implements TransactionIncomeService {
     private final CurrencyService currencyService;
     private final AgentBalanceService agentBalanceService;
     private final ClientBalanceService clientBalanceService;
+    private final AgentSalaryService agentSalary;
 
     @Override
     @Transactional
@@ -64,28 +64,26 @@ public class TransactionIncomeServiceImpl implements TransactionIncomeService {
         transactionIncomeRepository.save(income);
 
 
-
         List<UnitTransaction> saved = unitTransactionRepository.saveAll(list);
 
-        agentBalanceService.addMoney(dto, agent);
-clientBalanceService.addMoney(dto,client);
-
+        agentBalanceService.addMoney(dto, agent,transactionIncome.getTotal());
+        clientBalanceService.addMoney(dto, client);
+        agentSalary.addSalary(dto, agent, transactionIncome.getTotal());
 
         log.info("Transaction income created id={}", saved.get(0).getId());
         return transactionIncomeMapper.toResponse(saved.get(0).getTransactionIncome(), list);
     }
 
     @Override
-    public TransactionIncomeResponse getById(UUID id) {
+    public TransactionIncomeInfoResponse getById(UUID id) {
         log.info("Fetching transaction income by id={}", id);
 
         List<UnitTransaction> income = transactionIncomeRepository.findByTransactionIncomeId(id);
+        if (income.isEmpty()) {
+            throw new DataNotFoundException("transaction is not found");
+        }
+        return transactionIncomeMapper.toTransactionInfoResponse(income);
 
-//        transactionIncomeMapper
-//        transactionIncomeMapper.toTransactionInfoResponse(income);
-
-
-        return null;
     }
 
 
@@ -171,6 +169,7 @@ clientBalanceService.addMoney(dto,client);
     }
 
     @Override
+    @Transactional
     public TransactionIncomeResponse update(UUID id, TransactionIncomeRequestDTO dto) {
         log.info("Updating transaction income id={}", id);
 
@@ -184,6 +183,10 @@ clientBalanceService.addMoney(dto,client);
                 .orElseThrow(() -> new DataNotFoundException("Client not found: " + dto.getClientId()));
 
         transactionIncomeMapper.updateEntity(dto, income, agent, client);
+
+        List<UnitTransaction> unitTransactions = unitTransactionRepository.findByTransactionIncome(income);
+
+
         TransactionIncome saved = transactionIncomeRepository.save(income);
 
         log.info("Transaction income updated id={}", saved.getId());

@@ -3,7 +3,7 @@ package com.pet.accountsystem.mapper;
 import com.pet.accountsystem.dto.request.TransactionIncomeRequestDTO;
 import com.pet.accountsystem.dto.response.TransactionIncomeByRoleResponse;
 import com.pet.accountsystem.dto.response.TransactionIncomeResponse;
-import com.pet.accountsystem.dto.response.TransactionInfoResponse;
+import com.pet.accountsystem.dto.response.TransactionIncomeInfoResponse;
 import com.pet.accountsystem.dto.response.UnitTransactionResponse;
 import com.pet.accountsystem.entity.Agent;
 import com.pet.accountsystem.entity.Client;
@@ -16,6 +16,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.math.RoundingMode;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Component
@@ -94,20 +96,21 @@ public class TransactionIncomeMapper {
     }
 
 
-    public TransactionInfoResponse toTransactionInfoResponse(UnitTransaction unitTransaction) {
-        TransactionIncome transactionIncome = unitTransaction.getTransactionIncome();
+    public TransactionIncomeInfoResponse toTransactionInfoResponse(List<UnitTransaction> unitTransaction) {
+        TransactionIncome transactionIncome = unitTransaction.get(0).getTransactionIncome();
         Client client = transactionIncome.getClient();
+        return TransactionIncomeInfoResponse.builder()
+                .clientFirstName(client.getFirstName())
+                .clientLastName(client.getLastName())
+                .description(transactionIncome.getDescription())
+                .transactionTime(transactionIncome.getCreatedAt())
 
-        return null;
-
-        //
-//        return TransactionInfoResponse.builder()
-//                .clientFirstName(client.getFirstName())
-//                .clientLastName(client.getLastName())
-//                .description(transactionIncome.getDescription())
-//                .transactionTime(unitTransaction.getCreatedAt())
-//                .unitTransactionResponses(toUnitTransactionResponse(unitTransaction))
-//                .build();
+                .isEditable(
+                Duration.between(transactionIncome.getCreatedAt(), LocalDateTime.now())
+                        .toHours() < 24
+        )
+                .unitTransactionResponses(unitTransaction.stream().map(this::toUnitTransactionResponse).toList())
+                .build();
     }
 
 
