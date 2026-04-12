@@ -7,8 +7,10 @@ import com.pet.accountsystem.dto.response.ClientBalanceResponse;
 import com.pet.accountsystem.entity.Client;
 import com.pet.accountsystem.entity.ClientBalance;
 import com.pet.accountsystem.entity.enums.Currency;
+import com.pet.accountsystem.exception.DataNotFoundException;
 import com.pet.accountsystem.mapper.ClientBalanceMapper;
 import com.pet.accountsystem.repository.ClientBalanceRepository;
+import com.pet.accountsystem.repository.ClientRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +25,7 @@ public class ClientBalanceService {
 
     private final ClientBalanceRepository repository;
 private final ClientBalanceMapper clientBalanceMapper;
-
+    private final ClientRepository clientRepository;
 
 
     public void addMoney(TransactionIncomeRequestDTO dto, Client client,BigDecimal total) {
@@ -76,7 +78,9 @@ private final ClientBalanceMapper clientBalanceMapper;
     }
 
     public ClientBalanceResponse getById(UUID id) {
-        return clientBalanceMapper.clientBalanceResponse(repository.findById(id)
+        Client client = clientRepository.findById(id).orElseThrow(() -> new DataNotFoundException("client is not found"));
+
+        return clientBalanceMapper.clientBalanceResponse(repository.findByClient(client)
                 .orElseThrow(() -> new RuntimeException("Balance not found")));
     }
 

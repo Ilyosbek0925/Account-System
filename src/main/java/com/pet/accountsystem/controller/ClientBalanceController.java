@@ -17,10 +17,10 @@ public class ClientBalanceController {
 
     private final ClientBalanceService service;
 
-    @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<ClientBalanceResponse>> getById(@PathVariable UUID id) {
+    @GetMapping("/{clientId}")
+    public ResponseEntity<ApiResponse<ClientBalanceResponse>> getById(@PathVariable UUID clientId) {
         return ResponseEntity.ok(ApiResponse.<ClientBalanceResponse>builder()
-                .data(service.getById(id))
+                .data(service.getById(clientId))
                 .status(200)
                 .message("got client balance")
                 .build());
